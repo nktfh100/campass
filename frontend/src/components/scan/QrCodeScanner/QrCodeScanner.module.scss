@@ -1,0 +1,14 @@
+.scanner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.scanner__video {
+	width: 85vw;
+
+	video {
+		border-radius: 0.75rem;
+	}
+}

@@ -1,0 +1,25 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: 100%;
+}
+
+.pagination {
+	margin-bottom: 0.1rem;
+}
+
+.cards {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: 100%;
+}
+
+.spinner {
+	margin: 1rem 0;
+}

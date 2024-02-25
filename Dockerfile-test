@@ -1,0 +1,15 @@
+FROM node:18
+
+WORKDIR /app
+
+COPY backend/package*.json ./
+
+RUN npm install
+
+COPY backend/ .
+
+RUN npm run build
+
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]

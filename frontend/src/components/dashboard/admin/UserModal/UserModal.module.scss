@@ -1,0 +1,27 @@
+
+
+.modal {
+    text-align: center;
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header__title {
+    font-size: 1.3rem;
+    margin-bottom: 0.1rem;
+}
+
+.modal-header__name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

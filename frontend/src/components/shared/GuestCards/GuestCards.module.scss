@@ -1,0 +1,24 @@
+.pagination {
+	margin-bottom: 0.1rem;
+}
+
+.cards {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.4rem;
+	width: 100%;
+}
+
+.cards--admin {
+	margin-top: 0;
+}
+
+.cards--user {
+	margin-top: 1.2rem;
+}
+
+.spinner {
+	margin: 1rem 0;
+}

@@ -1,0 +1,53 @@
+version: "3"
+services:
+    backend:
+        container_name: backend
+        restart: unless-stopped
+        build: ./backend
+        ports:
+            - 8080:8080
+        volumes:
+            - ./backend/database:/app/database
+        environment:
+            - NODE_ENV=production
+            - ADMIN_PASSWORD=admin
+            - JWT_SECRET=secret
+            - FRONTEND_URL=http://localhost
+    dozzle: # log viewer
+        container_name: dozzle
+        restart: unless-stopped
+        image: amir20/dozzle:latest
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            DOZZLE_NO_ANALYTICS: true
+    shynet: # analytics
+        container_name: shynet
+        restart: unless-stopped
+        image: milesmcc/shynet:edge
+        volumes:
+            - shynet_db:/var/local/shynet/db
+        environment:
+            - SQLITE=True
+            - DB_NAME=/var/local/shynet/db/db.sqlite3
+            - TIME_ZONE=Asia/Jerusalem
+            - PERFORM_CHECKS_AND_SETUP=True
+            # Set these to your analytics (TODO CHECK) deployment's domain. Both are comma separated, but CSRF_TRUSTED_ORIGINS also requires a scheme (e.g., `https://`).
+            - ALLOWED_HOSTS=analytics.localhost
+            - CSRF_TRUSTED_ORIGINS=http://analytics.localhost
+            - SCRIPT_USE_HTTPS=False
+    nginx:
+        container_name: nginx
+        restart: unless-stopped
+        build: .
+        environment:
+            - NGINX_HOST=localhost
+        ports:
+            - 80:80
+        depends_on:
+            - backend
+            - dozzle
+            - shynet
+
+volumes:
+    shynet_db:

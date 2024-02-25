@@ -1,0 +1,15 @@
+.form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.form__error {
+	opacity: 1;
+}
+
+.form__password {
+	max-width: 90%;
+}
