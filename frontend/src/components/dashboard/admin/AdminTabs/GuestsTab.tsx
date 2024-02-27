@@ -89,7 +89,7 @@ export default function GuestsTab({ event }: { event: Event }) {
 
 				<Button
 					onPress={handleExcelExportBtn}
-					disabled={guests.length == 0}
+					isDisabled={guests.length == 0}
 				>
 					ייצוא לאקסל
 				</Button>

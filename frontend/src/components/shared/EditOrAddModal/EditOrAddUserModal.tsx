@@ -168,7 +168,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								onValueChange={(value) => setFullName(value)}
 								isInvalid={!!fullNameError}
 								errorMessage={fullNameError}
-								disabled={isSubmitting}
+								isDisabled={isSubmitting}
 							/>
 							<Input
 								label="תעודת זהות"
@@ -179,7 +179,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								onValueChange={(value) => setIdNumber(value)}
 								isInvalid={!!idNumberError}
 								errorMessage={idNumberError}
-								disabled={isSubmitting}
+								isDisabled={isSubmitting}
 							/>
 						</ModalBody>
 						<ModalFooter className={stylesShared["modal__footer"]}>

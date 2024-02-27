@@ -315,7 +315,11 @@ export const exportGuestsExcel: RouteHandlerMethod = async (request, reply) => {
 	const data: any[] = [["שם מלא", "תעודת זהות", "נושא נשק"]];
 
 	guests.forEach((guest, _i) => {
-		data.push([guest.full_name, guest.id_number, guest.weapon]);
+		data.push([
+			guest.full_name,
+			guest.id_number,
+			guest.weapon ? "כן" : "לא",
+		]);
 	});
 
 	reply.header(

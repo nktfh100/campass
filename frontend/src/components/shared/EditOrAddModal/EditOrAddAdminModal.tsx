@@ -190,7 +190,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 								isRequired
 								value={username}
 								onValueChange={(value) => setUsername(value)}
-								disabled={isSubmitting}
+								isDisabled={isSubmitting}
 							/>
 
 							<Input
@@ -200,7 +200,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 								isRequired={modalType == ModalType.NEW}
 								value={password}
 								onValueChange={(value) => setPassword(value)}
-								disabled={isSubmitting}
+								isDisabled={isSubmitting}
 							/>
 						</ModalBody>
 						<ModalFooter className={stylesShared["modal__footer"]}>
@@ -217,7 +217,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 									<Button
 										color="danger"
 										onPress={handleDeleteBtn}
-										disabled={isSubmitting}
+										isDisabled={isSubmitting}
 									>
 										מחק
 									</Button>

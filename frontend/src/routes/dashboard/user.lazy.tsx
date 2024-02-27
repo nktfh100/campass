@@ -107,7 +107,7 @@ function DashboardUserIndex() {
 
 				<Button
 					color="primary"
-					disabled={
+					isDisabled={
 						guests.length >= (userData?.event_invitation_count || 0)
 					}
 					onPress={() => {

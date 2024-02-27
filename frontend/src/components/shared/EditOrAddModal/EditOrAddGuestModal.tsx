@@ -218,7 +218,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							isRequired
 							value={fullName}
 							onValueChange={(value) => setFullName(value)}
-							disabled={isSubmitting}
+							isDisabled={isSubmitting}
 						/>
 						<Input
 							label="תעודת זהות"
@@ -229,12 +229,12 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							onValueChange={(value) => setIdNumber(value)}
 							isInvalid={!!idNumberError}
 							errorMessage={idNumberError}
-							disabled={isSubmitting}
+							isDisabled={isSubmitting}
 						/>
 						<Checkbox
 							isSelected={weapon}
 							onValueChange={setWeapon}
-							disabled={isSubmitting}
+							isDisabled={isSubmitting}
 						>
 							<p style={{ marginRight: "0.5rem" }}>
 								נושא נשק אישי
@@ -252,7 +252,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 								<Button
 									color="danger"
 									onPress={handleDeleteBtn}
-									disabled={isSubmitting}
+									isDisabled={isSubmitting}
 								>
 									מחק
 								</Button>

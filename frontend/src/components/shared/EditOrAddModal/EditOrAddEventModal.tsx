@@ -148,7 +148,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							isRequired
 							value={name}
 							onValueChange={(value) => setName(value)}
-							disabled={isSubmitting}
+							isDisabled={isSubmitting}
 						/>
 
 						<Input
@@ -163,7 +163,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							}
 							isInvalid={!!invitationCountError}
 							errorMessage={invitationCountError}
-							disabled={isSubmitting}
+							isDisabled={isSubmitting}
 						/>
 					</ModalBody>
 					<ModalFooter className={stylesShared["modal__footer"]}>
