@@ -1,14 +1,14 @@
-import { Html5QrcodeError } from 'html5-qrcode/esm/core';
-import { useCallback, useRef, useState } from 'react';
+import { Html5QrcodeError } from "html5-qrcode/esm/core";
+import { useCallback, useRef, useState } from "react";
 
-import QrCodeScanner from '@/components/scan/QrCodeScanner/QrCodeScanner';
-import ScanResultsCard from '@/components/scan/ScanResultsCard/ScanResultsCard';
-import { getGuest } from '@/lib/api/guests';
-import { Guest } from '@/lib/types';
-import { Spinner } from '@nextui-org/spinner';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import QrCodeScanner from "@/components/scan/QrCodeScanner/QrCodeScanner";
+import ScanResultsCard from "@/components/scan/ScanResultsCard/ScanResultsCard";
+import { getGuest } from "@/lib/api/guests";
+import { Guest } from "@/lib/types";
+import { Spinner } from "@nextui-org/spinner";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-import styles from './scan.module.scss';
+import styles from "./scan.module.scss";
 
 export const Route = createLazyFileRoute("/scan")({
 	component: Scan,

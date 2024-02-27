@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import EditOrAddGuestModal from "@/components/shared/EditOrAddGuestModal/EditOrAddGuestModal";
+import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
 import GuestCards from "@/components/shared/GuestCards/GuestCards";
-import GuestModal from "@/components/shared/GuestModal/GuestModal";
 import GuestsContext from "@/contexts/GuestsContext";
 import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";
 import { getGuests } from "@/lib/api/guests";
@@ -27,9 +26,6 @@ function DashboardUserIndex() {
 	// Edit/Add guest modal
 	const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
 	const [modalGuest, setModalGuest] = useState<Guest | null>(null);
-
-	// Guest info modal
-	const [infoGuestModal, setInfoGuestModal] = useState<Guest | null>(null);
 
 	const { id } = useEnsureTokenValid("/login/user", "id");
 
@@ -82,10 +78,6 @@ function DashboardUserIndex() {
 		}
 	}, [guestsResData]);
 
-	const handleGuestEdited = useCallback((guest: Guest) => {
-		setInfoGuestModal(guest);
-	}, []);
-
 	if (guestsLoading || userDataLoading) {
 		return <Spinner size="lg" className={styles["spinner"]} />;
 	}
@@ -130,24 +122,10 @@ function DashboardUserIndex() {
 					isLoading={guestsLoading}
 					eventName={userData?.event_name || ""}
 					onGuestCardClick={(guest: Guest) => {
-						setInfoGuestModal(guest);
-					}}
-					isAdmin={false}
-				/>
-
-				<GuestModal
-					eventName={userData?.event_name || ""}
-					guest={infoGuestModal}
-					isOpen={infoGuestModal != null}
-					onClose={() => setInfoGuestModal(null)}
-					isAdmin={false}
-					onEditBtnClick={() => {
-						setModalGuest(infoGuestModal);
+						setModalGuest(guest);
 						setIsGuestModalOpen(true);
 					}}
-					onGuestDeleted={() => {
-						setInfoGuestModal(null);
-					}}
+					isAdmin={false}
 				/>
 
 				<EditOrAddGuestModal
@@ -157,7 +135,6 @@ function DashboardUserIndex() {
 					onClose={() => setIsGuestModalOpen(false)}
 					guest={modalGuest}
 					isAdmin={false}
-					onGuestEdited={handleGuestEdited}
 				/>
 			</div>
 		</GuestsContext.Provider>

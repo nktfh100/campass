@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 import AdminTabs from "@/components/dashboard/admin/AdminTabs/AdminTabs";
-import EditOrAddEventModal from "@/components/dashboard/admin/EditOrAddEventModal/EditOrAddEventModal";
 import EventActionsBtn from "@/components/dashboard/admin/EventActionsBtn/EventActionsBtn";
 import NoEvents from "@/components/dashboard/admin/NoEvents/NoEvents";
 import SelectEvent from "@/components/dashboard/admin/SelectEvent/SelectEvent";
+import EditOrAddEventModal from "@/components/shared/EditOrAddModal/EditOrAddEventModal";
 import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import ActiveEventContext from "@/contexts/ActiveEventContext";
 import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import EditOrAddUserModal from "@/components/dashboard/admin/EditOrAddUserModal/EditOrAddUserModal";
 import UserCards from "@/components/dashboard/admin/UserCards/UserCards";
 import UserModal from "@/components/dashboard/admin/UserModal/UserModal";
+import EditOrAddUserModal from "@/components/shared/EditOrAddModal/EditOrAddUserModal";
 import UsersContext from "@/contexts/UsersContext";
 import { getUsers } from "@/lib/api/users";
 import { ApiPagination, Event, ModalType, User } from "@/lib/types";

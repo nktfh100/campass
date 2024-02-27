@@ -18,7 +18,7 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import styles from "./EditOrAddAdminModal.module.scss";
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -107,7 +107,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 			if (modalType == ModalType.EDIT) {
 				// onAdminEdited(res.data);
 				setAdmins((prev) =>
-					prev.map((u) => (u.id == admin!.id ? res.data! : u))
+					prev.map((a) => (a.id == admin!.id ? res.data! : a))
 				);
 			} else {
 				setAdmins((prev) => [...prev, res.data!]);
@@ -129,23 +129,28 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 		}
 	};
 
-	const handleDeleteBtn = async () => {
+	const handleDeleteBtn = () => {
+		if (!admin) {
+			console.error("admin is null");
+			return;
+		}
+
 		let res: APIResponse<boolean>;
 		openYesNoGlobalModal({
 			modalType: MessageModalType.YesNoDanger,
 			title: "מחיקת מפקד",
-			bodyText: `האם אתה בטוח שברצונך למחוק את המפקד ${username}?`,
+			bodyText: `האם אתה בטוח שברצונך למחוק את המפקד ${admin.username}?`,
 			btnCallback: async () => {
-				res = await deleteAdmin(admin!.id);
+				res = await deleteAdmin(admin.id);
 			},
 			afterClosedCallback: () => {
 				if (res.data) {
-					setAdmins((prev) => prev.filter((u) => u.id != admin!.id));
+					setAdmins((prev) => prev.filter((u) => u.id != admin.id));
 					handleOpenChange(false);
 					openGlobalModal({
 						modalType: MessageModalType.Success,
 						title: "מפקד נמחק בהצלחה",
-						bodyText: `המפקד ${username} נמחק בהצלחה`,
+						bodyText: `המפקד ${admin?.username} נמחק בהצלחה`,
 					});
 				}
 				if (res.error) {
@@ -167,7 +172,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 				placement="center"
 			>
 				<ModalContent>
-					<ModalHeader className={styles["modal__header"]}>
+					<ModalHeader className={stylesShared["modal__header"]}>
 						<p>
 							{modalType == ModalType.EDIT
 								? "עריכת מפקד"
@@ -198,7 +203,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 								disabled={isSubmitting}
 							/>
 						</ModalBody>
-						<ModalFooter className={styles["modal__footer"]}>
+						<ModalFooter className={stylesShared["modal__footer"]}>
 							{error && (
 								<p
 									className="text-red-500 text-center"
@@ -207,7 +212,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 									שגיאה: {error}
 								</p>
 							)}
-							<div className={styles["modal__buttons"]}>
+							<div className={stylesShared["modal__buttons"]}>
 								{modalType == ModalType.EDIT && (
 									<Button
 										color="danger"

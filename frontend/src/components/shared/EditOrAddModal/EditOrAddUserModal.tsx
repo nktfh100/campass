@@ -15,7 +15,7 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import styles from "./EditOrAddUserModal.module.scss";
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -148,7 +148,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 				placement="center"
 			>
 				<ModalContent>
-					<ModalHeader className={styles["modal__header"]}>
+					<ModalHeader className={stylesShared["modal__header"]}>
 						<p>
 							{modalType == ModalType.EDIT
 								? "עריכת משתמש"
@@ -182,7 +182,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								disabled={isSubmitting}
 							/>
 						</ModalBody>
-						<ModalFooter className={styles["modal__footer"]}>
+						<ModalFooter className={stylesShared["modal__footer"]}>
 							{error && (
 								<p
 									className="text-red-500 text-center"

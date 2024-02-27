@@ -14,7 +14,7 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import styles from "./EditOrAddEventModal.module.scss";
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 type BaseModalProps = {
 	modalType: ModalType;
@@ -133,7 +133,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 		>
 			<ModalContent>
 				<form onSubmit={handleFormSubmit}>
-					<ModalHeader className={styles["modal__header"]}>
+					<ModalHeader className={stylesShared["modal__header"]}>
 						<p>
 							{modalType == ModalType.EDIT
 								? "עריכת אירוע"
@@ -166,7 +166,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							disabled={isSubmitting}
 						/>
 					</ModalBody>
-					<ModalFooter className={styles["modal__footer"]}>
+					<ModalFooter className={stylesShared["modal__footer"]}>
 						{error && (
 							<p className="text-red-500 text-center" dir="rtl">
 								שגיאה: {error}

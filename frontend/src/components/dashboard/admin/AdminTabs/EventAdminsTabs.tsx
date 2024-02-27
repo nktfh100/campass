@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import EditOrAddAdminModal from "@/components/dashboard/admin/EditOrAddAdminModal/EditOrAddAdminModal";
+import EditOrAddAdminModal from "@/components/shared/EditOrAddModal/EditOrAddAdminModal";
 import AdminsContext from "@/contexts/AdminsContext";
 import { getAdmins } from "@/lib/api/admins";
 import { Admin, Event, ModalType } from "@/lib/types";

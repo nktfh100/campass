@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import EditOrAddGuestModal from "@/components/shared/EditOrAddGuestModal/EditOrAddGuestModal";
+import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
 import GuestCards from "@/components/shared/GuestCards/GuestCards";
 import GuestModal from "@/components/shared/GuestModal/GuestModal";
 import GuestsContext from "@/contexts/GuestsContext";

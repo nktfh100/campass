@@ -2,9 +2,12 @@ import { useContext, useEffect, useState } from "react";
 
 import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import GuestsContext from "@/contexts/GuestsContext";
-import { createGuest, editGuest } from "@/lib/api/guests";
+import { createGuest, deleteGuest, editGuest } from "@/lib/api/guests";
 import { APIResponse, Guest, ModalType } from "@/lib/types";
-import { openGlobalModal } from "@/stores/useGlobalModalStore";
+import {
+	openGlobalModal,
+	openYesNoGlobalModal,
+} from "@/stores/useGlobalModalStore";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import {
@@ -15,7 +18,7 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import styles from "./EditOrAddGuestModal.module.scss";
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -32,7 +35,7 @@ interface NewGuestModalProps {
 
 interface EditGuestModalProps {
 	modalType: ModalType.EDIT;
-	onGuestEdited: (guest: Guest) => void;
+	onGuestEdited?: (guest: Guest) => void;
 	guest: Guest | null;
 }
 
@@ -123,7 +126,9 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 					bodyText: `האורח ${apiRes.data.full_name} נוסף בהצלחה`,
 				});
 			} else {
-				onGuestEdited({ ...guest, ...apiRes.data });
+				if (onGuestEdited) {
+					onGuestEdited({ ...guest, ...apiRes.data });
+				}
 				setGuests((prev) =>
 					prev.map((g) =>
 						g.uuid == apiRes.data!.uuid ? apiRes.data! : g
@@ -147,6 +152,42 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 		}
 	};
 
+	const handleDeleteBtn = () => {
+		if (!guest) {
+			console.error("guest is null");
+			return;
+		}
+		let res: APIResponse<boolean>;
+		openYesNoGlobalModal({
+			modalType: MessageModalType.YesNoDanger,
+			title: "מחיקת אורח",
+			bodyText: `האם אתה בטוח שברצונך למחוק את האורח ${guest.full_name}?`,
+			btnCallback: async () => {
+				res = await deleteGuest(guest!.uuid);
+			},
+			afterClosedCallback: () => {
+				if (res.data) {
+					setGuests((prev) =>
+						prev.filter((g) => g.uuid != guest.uuid)
+					);
+					handleOpenChange(false);
+					openGlobalModal({
+						modalType: MessageModalType.Success,
+						title: "אורח נמחק בהצלחה",
+						bodyText: `האורח ${guest.full_name} נמחק בהצלחה`,
+					});
+				}
+				if (res.error) {
+					openGlobalModal({
+						modalType: MessageModalType.Error,
+						title: "שגיאה",
+						bodyText: res.error,
+					});
+				}
+			},
+		});
+	};
+
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -154,7 +195,10 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 			placement="center"
 		>
 			<ModalContent>
-				<ModalHeader className={styles["modal__header"]} dir="rtl">
+				<ModalHeader
+					className={stylesShared["modal__header"]}
+					dir="rtl"
+				>
 					<p>
 						{modalType == ModalType.EDIT
 							? "עריכת אורח"
@@ -195,19 +239,31 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							disabled={isSubmitting}
 						/>
 					</ModalBody>
-					<ModalFooter className={styles["modal__footer"]}>
+					<ModalFooter className={stylesShared["modal__footer"]}>
 						{error && (
 							<p className="text-red-500 text-center" dir="rtl">
 								שגיאה: {error}
 							</p>
 						)}
-						<Button
-							color="primary"
-							type="submit"
-							isLoading={isSubmitting}
-						>
-							שמור
-						</Button>
+						<div className={stylesShared["modal__buttons"]}>
+							{modalType == ModalType.EDIT && (
+								<Button
+									color="danger"
+									onPress={handleDeleteBtn}
+									disabled={isSubmitting}
+								>
+									מחק
+								</Button>
+							)}
+
+							<Button
+								color="primary"
+								type="submit"
+								isLoading={isSubmitting}
+							>
+								שמור
+							</Button>
+						</div>
 					</ModalFooter>
 				</form>
 			</ModalContent>
