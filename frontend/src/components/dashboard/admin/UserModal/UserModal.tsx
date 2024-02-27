@@ -1,9 +1,13 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
+import GuestCards from "@/components/shared/GuestCards/GuestCards";
 import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import GuestsContext from "@/contexts/GuestsContext";
 import UsersContext from "@/contexts/UsersContext";
+import { getGuestsByUserId } from "@/lib/api/guests";
 import { deleteUser } from "@/lib/api/users";
-import { APIResponse, User } from "@/lib/types";
+import { APIResponse, Guest, ModalType, User } from "@/lib/types";
 import {
 	openGlobalModal,
 	openYesNoGlobalModal,
@@ -16,6 +20,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@nextui-org/modal";
+import { useQuery } from "@tanstack/react-query";
 
 import styles from "./UserModal.module.scss";
 
@@ -35,6 +40,34 @@ export default function UserModal({
 	onUserDeleted: () => void;
 }) {
 	const { setUsers } = useContext(UsersContext);
+
+	const [userGuests, setUserGuests] = useState<Guest[]>([]);
+	const [activeGuest, setActiveGuest] = useState<Guest | null>(null);
+
+	const { isLoading, error, data } = useQuery({
+		queryKey: ["guests", user?.id],
+		queryFn: async () => {
+			if (!user) {
+				return [];
+			}
+
+			const { data, error } = await getGuestsByUserId(user.id);
+
+			if (data) {
+				return data;
+			}
+
+			throw new Error(error);
+		},
+	});
+
+	useEffect(() => {
+		if (data) {
+			setUserGuests(data);
+		}
+	}, [data]);
+
+	console.log("data", data);
 
 	const handleUserDeleteBtn = async () => {
 		if (!user) {
@@ -82,36 +115,70 @@ export default function UserModal({
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			onOpenChange={(open) => {
-				if (!open) {
-					onClose();
-				}
-			}}
-			title={user?.full_name}
-			placement="center"
+		<GuestsContext.Provider
+			value={{ guests: userGuests, setGuests: setUserGuests }}
 		>
-			<ModalContent className={styles["modal"]}>
-				<ModalHeader className={styles["modal-header"]}>
-					<p className={styles["modal-header__title"]} dir="rtl">
-						{eventName}
-					</p>
-					<p>משתמש</p>
-				</ModalHeader>
-				<ModalBody>
-					<p>שם מלא: {user?.full_name}</p>
-					<p>תעודת זהות: {user?.id_number}</p>
-				</ModalBody>
-				<ModalFooter className={styles["modal-footer"]}>
-					<Button onPress={handleUserDeleteBtn} color="danger">
-						מחק
-					</Button>
-					<Button color="primary" onPress={onEditBtnClick}>
-						ערוך
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+			<Modal
+				isOpen={isOpen}
+				onOpenChange={(open) => {
+					if (!open) {
+						onClose();
+					}
+				}}
+				title={user?.full_name}
+				placement="center"
+			>
+				<ModalContent className={styles["modal"]}>
+					<ModalHeader className={styles["modal-header"]}>
+						<p className={styles["modal-header__title"]} dir="rtl">
+							{eventName}
+						</p>
+						<p>משתמש</p>
+					</ModalHeader>
+					<ModalBody>
+						<div>
+							<p>
+								<strong>שם מלא:</strong> {user?.full_name}
+							</p>
+							<p>
+								<strong>תעודת זהות:</strong> {user?.id_number}
+							</p>
+						</div>
+						{error && (
+							<p className="text-danger" dir="rtl">
+								שגיאה: {error.message}
+							</p>
+						)}
+						{userGuests && (
+							<div dir="rtl">
+								<h3>אורחים:</h3>
+								<GuestCards
+									isAdmin={false}
+									isLoading={isLoading}
+									onGuestCardClick={setActiveGuest}
+								/>
+							</div>
+						)}
+					</ModalBody>
+					<ModalFooter className={styles["modal-footer"]}>
+						<Button onPress={handleUserDeleteBtn} color="danger">
+							מחק
+						</Button>
+						<Button color="primary" onPress={onEditBtnClick}>
+							ערוך
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+
+			<EditOrAddGuestModal
+				modalType={ModalType.EDIT}
+				eventName={eventName}
+				isOpen={!!activeGuest}
+				onClose={() => setActiveGuest(null)}
+				guest={activeGuest}
+				isAdmin
+			/>
+		</GuestsContext.Provider>
 	);
 }

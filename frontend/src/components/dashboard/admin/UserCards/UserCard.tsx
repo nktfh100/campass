@@ -17,8 +17,10 @@ export default function UserCard({
 			className={styles["card"]}
 		>
 			<CardBody className={styles["card__body"]}>
-				<p>{user.full_name}</p>
-				<p>{user.id_number}</p>
+				<div>
+					<p>{user.full_name}</p>
+					<p>{user.id_number}</p>
+				</div>
 			</CardBody>
 		</Card>
 	);

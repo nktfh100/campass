@@ -1,4 +1,5 @@
 import { RouteHandlerMethod } from "fastify";
+import xlsx from "node-xlsx";
 
 import { AdminRole } from "@/lib/types";
 import { getRandomUUID } from "@/utils/utils";
@@ -105,18 +106,30 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 	}
 
 	if (request.adminData) {
-		const { page, limit, event_id } = request.query as {
+		const { page, limit, event_id, user_id } = request.query as {
 			page: number;
 			limit: number;
 			event_id?: number;
+			user_id?: number;
 		};
 
 		const offset = (page - 1) * limit;
 
-		const query = knex("guests");
+		let query = knex("guests");
 
 		if (event_id) {
 			query.where("guests.event_id", event_id);
+		}
+
+		if (request.adminData.role != AdminRole.SuperAdmin) {
+			query = knex("guests").where(
+				"guests.event_id",
+				request.adminData.eventId
+			);
+		}
+
+		if (user_id) {
+			query.where("guests.user_id", user_id);
 		}
 
 		const guests = await query
@@ -134,6 +147,17 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 
 		if (event_id) {
 			totalCountQuery.where("event_id", event_id);
+		}
+
+		if (request.adminData.role != AdminRole.SuperAdmin) {
+			totalCountQuery = knex("guests").where(
+				"event_id",
+				request.adminData.eventId
+			);
+		}
+
+		if (user_id) {
+			totalCountQuery.where("user_id", user_id);
 		}
 
 		const totalCount = await totalCountQuery
@@ -258,4 +282,54 @@ export const deleteGuest: RouteHandlerMethod = async (request, reply) => {
 
 	reply.status(204);
 	return;
+};
+
+// Export all guests for the event using excel4node
+export const exportGuestsExcel: RouteHandlerMethod = async (request, reply) => {
+	const { knex } = request.fastify;
+	const { event_id } = request.query as { event_id: number };
+
+	const event = await knex("events")
+		.select("name")
+		.where("id", event_id)
+		.first();
+
+	if (!event) {
+		reply.status(404);
+		return { error: "Event not found" };
+	}
+
+	if (request.adminData && request.adminData.role != AdminRole.SuperAdmin) {
+		if (request.adminData.eventId != event_id) {
+			reply.status(403);
+			return {
+				error: "You do not have permission to export this event's guests",
+			};
+		}
+	}
+
+	const guests = await knex("guests")
+		.select("full_name", "id_number", "relationship", "entered_at")
+		.where("event_id", event_id);
+
+	const data = [["שם מלא", "תעודת זהות", "קשר"]];
+
+	guests.forEach((guest, _i) => {
+		data.push([guest.full_name, guest.id_number, guest.relationship]);
+	});
+
+	reply.header(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	);
+
+	const sheetOptions = {
+		"!cols": [{ wch: 20 }, { wch: 20 }, { wch: 20 }],
+	};
+
+	const buffer = xlsx.build([
+		{ name: `אורחים - ${event.name}`, data, options: sheetOptions },
+	]);
+
+	reply.send(buffer);
 };

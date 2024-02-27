@@ -10,7 +10,6 @@ import styles from "./GuestCards.module.scss";
 
 interface BaseGuestCardsProps {
 	isLoading: boolean;
-	eventName: string;
 	onGuestCardClick: (guest: Guest | Guest) => void;
 }
 

@@ -6,7 +6,9 @@ export async function getAdmins(
 	eventId: string | number
 ): Promise<APIResponse<Admin[]>> {
 	try {
-		const res = await apiClient.get(`/admins?event_id=${eventId}`);
+		const res = await apiClient.get(`/admins`, {
+			params: { event_id: eventId },
+		});
 
 		const status = res.status;
 

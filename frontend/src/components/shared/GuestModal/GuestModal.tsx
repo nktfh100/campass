@@ -104,10 +104,21 @@ export default function GuestModal({
 					<p>{isAdmin ? "אורח" : "אורח שהזמנת"}</p>
 				</ModalHeader>
 				<ModalBody>
-					<p>שם מלא: {guest?.full_name}</p>
-					<p>תעודת זהות: {guest?.id_number}</p>
-					<p>קשר: {guest?.relationship}</p>
-					{isAdmin && <p>הוזמן על ידי: {guest?.user_full_name}</p>}
+					<p>
+						<strong>שם מלא:</strong> {guest?.full_name}
+					</p>
+					<p>
+						<strong>תעודת זהות:</strong> {guest?.id_number}
+					</p>
+					<p>
+						<strong>קשר:</strong> {guest?.relationship}
+					</p>
+					{isAdmin && (
+						<p>
+							<strong>הוזמן על ידי:</strong>{" "}
+							{guest?.user_full_name}
+						</p>
+					)}
 				</ModalBody>
 				<ModalFooter className={styles["modal-footer"]}>
 					<Button

@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import UserCards from "@/components/dashboard/admin/UserCards/UserCards";
 import UserModal from "@/components/dashboard/admin/UserModal/UserModal";
 import EditOrAddUserModal from "@/components/shared/EditOrAddModal/EditOrAddUserModal";
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import UsersContext from "@/contexts/UsersContext";
+import { uploadUsersExcel } from "@/lib/api/excel";
 import { getUsers } from "@/lib/api/users";
 import { ApiPagination, Event, ModalType, User } from "@/lib/types";
+import { openGlobalModal } from "@/stores/useGlobalModalStore";
 import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 
@@ -26,6 +29,8 @@ export default function UsersTab({ event }: { event: Event }) {
 	// User info modal
 	const [infoModalUser, setInfoModalUser] = useState<User | null>(null);
 
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setModalEditUser(null);
@@ -39,6 +44,7 @@ export default function UsersTab({ event }: { event: Event }) {
 		isLoading: usersIsLoading,
 		error: usersError,
 		data: usersResData,
+		refetch: refreshUsers,
 	} = useQuery({
 		queryKey: ["users", event.id, currentPage],
 		queryFn: async () => {
@@ -64,9 +70,45 @@ export default function UsersTab({ event }: { event: Event }) {
 		}
 	}, [usersResData]);
 
+	const handleExcelImportBtn = async () => {
+		fileInputRef.current?.click();
+	};
+
+	const handleExcelFileChange = async (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const file = e.target.files?.[0];
+		if (!file) {
+			return;
+		}
+
+		const res = await uploadUsersExcel(event.id, file);
+
+		if (res.error) {
+			openGlobalModal({
+				modalType: MessageModalType.Error,
+				title: "שגיאה",
+				bodyText: res.error,
+			});
+		}
+
+		if (res.data) {
+			openGlobalModal({
+				modalType: MessageModalType.Success,
+				title: "ייבוא מאקסל",
+				bodyText: "המשתמשים יובאו בהצלחה",
+				afterClosedCallback: () => {
+					refreshUsers();
+				},
+			});
+		}
+	};
+
 	return (
 		<UsersContext.Provider value={{ users, setUsers }}>
 			<div className={`fade-in ${stylesShared["tab-content"]}`}>
+				<Button onPress={handleExcelImportBtn}>ייבוא מאקסל</Button>
+
 				<Button
 					onPress={() => {
 						setModalEditUser(null);
@@ -112,6 +154,14 @@ export default function UsersTab({ event }: { event: Event }) {
 						setIsModalOpen(true);
 					}}
 					onUserDeleted={() => setInfoModalUser(null)}
+				/>
+
+				<input
+					type="file"
+					ref={fileInputRef}
+					hidden
+					accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+					onChange={handleExcelFileChange}
 				/>
 			</div>
 		</UsersContext.Provider>

@@ -19,6 +19,8 @@ server {
     listen [::]:80;
     server_name api.${NGINX_HOST};
 
+    client_max_body_size 8M;
+
     location / {
         proxy_pass http://backend:8080;
 

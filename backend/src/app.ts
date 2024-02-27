@@ -12,6 +12,7 @@ import usersRoutes from "@/routes/usersRoutes";
 import fastifyAuth from "@fastify/auth";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
+import fastifyMultipart from "@fastify/multipart";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
 import adminsRoutes from "./routes/adminsRoutes";
@@ -54,6 +55,8 @@ export default async function buildFastify(
 	await fastify.register(fastifyBcrypt, {
 		saltWorkFactor: 12,
 	});
+
+	await fastify.register(fastifyMultipart);
 
 	fastify.decorate("verifyAdmin", verifyAdmin);
 	fastify.decorate("verifyUser", verifyUser);

@@ -1,4 +1,6 @@
 import { RouteHandlerMethod } from "fastify";
+import { NewUser } from "knex/types/tables";
+import xlsx from "node-xlsx";
 
 import { AdminRole } from "@/lib/types";
 import { Static, Type } from "@sinclair/typebox";
@@ -202,5 +204,95 @@ export const deleteUser: RouteHandlerMethod = async (request, reply) => {
 	await knex("guests").where("user_id", id).del();
 
 	reply.status(204);
+	return;
+};
+
+export const importUsersExcel: RouteHandlerMethod = async (request, reply) => {
+	const { knex } = request.fastify;
+	const { event_id } = request.query as { event_id: number };
+
+	if (!event_id) {
+		reply.status(400);
+		return { error: "event_id is required" };
+	}
+
+	const event = await knex("events")
+		.select("id")
+		.where("id", event_id)
+		.first();
+
+	if (!event) {
+		reply.status(400);
+		return { error: "Event not found" };
+	}
+
+	const data = await request.file();
+	if (!data) {
+		reply.status(400);
+		return { error: "File not found" };
+	}
+
+	const buffer = await data.toBuffer();
+
+	const workSheetsFromBuffer = xlsx.parse(buffer);
+
+	const usersSheet = workSheetsFromBuffer[0].data;
+
+	const users: NewUser[] = [];
+
+	usersSheet.forEach((user) => {
+		let idNumberColumnIndex = -1;
+		let fullNameColumnIndex = -1;
+
+		// Find the column index for id_number (only digits)
+		for (let i = 0; i < user.length; i++) {
+			if (/^\d+$/.test(user[i])) {
+				idNumberColumnIndex = i;
+				break;
+			}
+		}
+
+		// Find the column index for full_name (cell without digits)
+		for (let i = 0; i < user.length; i++) {
+			if (i !== idNumberColumnIndex && !/^\d+$/.test(user[i])) {
+				fullNameColumnIndex = i;
+				break;
+			}
+		}
+
+		if (idNumberColumnIndex == -1 || fullNameColumnIndex == -1) {
+			return;
+		}
+
+		users.push({
+			id_number: user[idNumberColumnIndex],
+			full_name: user[fullNameColumnIndex],
+			event_id: event_id,
+		});
+	});
+
+	if (users.length == 0) {
+		reply.status(400);
+		return { error: "No users found in the file" };
+	}
+
+	// Skip users that already exist
+	const existingUsers = await knex("users")
+		.select("id_number")
+		.where("event_id", event_id);
+
+	const newUsers = users.filter(
+		(user) => !existingUsers.find((u) => u.id_number == user.id_number)
+	);
+
+	if (newUsers.length == 0) {
+		reply.status(204);
+		return;
+	}
+
+	await knex("users").insert(newUsers);
+
+	reply.status(204);
+
 	return;
 };

@@ -3,6 +3,7 @@ import { FastifyPluginCallback, FastifySchema } from "fastify";
 import {
 	createGuest,
 	deleteGuest,
+	exportGuestsExcel,
 	getGuestByUUIDOrIdNumber,
 	getGuests,
 	updateGuest,
@@ -41,6 +42,7 @@ const getGuestsSchema: FastifySchema = {
 			page: Type.Number({ default: 1 }),
 			limit: Type.Number({ default: 25 }),
 			event_id: Type.Optional(Type.Number()),
+			user_id: Type.Optional(Type.Number()),
 		})
 	),
 	response: {
@@ -93,7 +95,21 @@ export const updateGuestSchema: FastifySchema = {
 	},
 };
 
+export const exportGuestsToExcelSchema: FastifySchema = {
+	querystring: Type.Object({
+		event_id: Type.Number(),
+	}),
+};
+
 const guestsRoutes: FastifyPluginCallback = (fastify, options, done) => {
+	fastify.route({
+		method: "GET",
+		url: "/excel-export",
+		handler: exportGuestsExcel,
+		schema: exportGuestsToExcelSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
+	});
+
 	fastify.route({
 		method: "POST",
 		url: "/",

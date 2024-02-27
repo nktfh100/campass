@@ -1,11 +1,16 @@
+import FileSaver from "file-saver";
 import { useEffect, useState } from "react";
 
 import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
 import GuestCards from "@/components/shared/GuestCards/GuestCards";
 import GuestModal from "@/components/shared/GuestModal/GuestModal";
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import GuestsContext from "@/contexts/GuestsContext";
+import { exportGuestsToExcel } from "@/lib/api/excel";
 import { getGuestsAdmin } from "@/lib/api/guests";
 import { ApiPagination, Event, Guest, ModalType } from "@/lib/types";
+import { openGlobalModal } from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
 import { useQuery } from "@tanstack/react-query";
 
 import stylesShared from "./AdminTabShared.module.scss";
@@ -59,6 +64,20 @@ export default function GuestsTab({ event }: { event: Event }) {
 		}
 	}, [guestsResData]);
 
+	const handleExcelExportBtn = async () => {
+		const res = await exportGuestsToExcel(event.id);
+		if (!res.data || res.error) {
+			openGlobalModal({
+				modalType: MessageModalType.Error,
+				title: "שגיאה",
+				bodyText: res.error,
+			});
+			return;
+		}
+
+		FileSaver.saveAs(res.data, `אורחים - ${event.name}.xlsx`);
+	};
+
 	return (
 		<GuestsContext.Provider value={{ guests, setGuests }}>
 			<div className={`fade-in ${stylesShared["tab-content"]}`}>
@@ -68,9 +87,15 @@ export default function GuestsTab({ event }: { event: Event }) {
 					</p>
 				)}
 
+				<Button
+					onPress={handleExcelExportBtn}
+					disabled={guests.length == 0}
+				>
+					ייצוא לאקסל
+				</Button>
+
 				<GuestCards
 					isLoading={guestsIsLoading}
-					eventName={event.name || ""}
 					pageCount={paginationData?.pageCount || 1}
 					currentPage={currentPage}
 					onPageChange={(page: number) => setCurrentPage(page)}

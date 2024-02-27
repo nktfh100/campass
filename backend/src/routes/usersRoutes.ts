@@ -5,6 +5,7 @@ import {
 	deleteUser,
 	getUser,
 	getUsers,
+	importUsersExcel,
 	updateUser,
 } from "@/controllers/usersController";
 import { AdminRole } from "@/lib/types";
@@ -72,7 +73,21 @@ const updateUserSchema: FastifySchema = {
 	},
 };
 
+const importUsersExcelSchema: FastifySchema = {
+	querystring: Type.Object({
+		event_id: Type.Number(),
+	}),
+};
+
 const usersRoutes: FastifyPluginCallback = (fastify, options, done) => {
+	fastify.route({
+		method: "POST",
+		url: "/excel-import",
+		handler: importUsersExcel,
+		schema: importUsersExcelSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
+	});
+
 	fastify.route({
 		method: "POST",
 		url: "/",

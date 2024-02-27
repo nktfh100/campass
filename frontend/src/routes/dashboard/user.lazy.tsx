@@ -120,7 +120,6 @@ function DashboardUserIndex() {
 
 				<GuestCards
 					isLoading={guestsLoading}
-					eventName={userData?.event_name || ""}
 					onGuestCardClick={(guest: Guest) => {
 						setModalGuest(guest);
 						setIsGuestModalOpen(true);

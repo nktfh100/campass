@@ -142,6 +142,31 @@ export async function getGuestsAdmin(
 	}
 }
 
+export async function getGuestsByUserId(
+	userId: number
+): Promise<APIResponse<Guest[]>> {
+	try {
+		const res = await apiClient.get("/guests", {
+			params: { user_id: userId },
+		});
+
+		const status = res.status;
+
+		if (res.data.guests) {
+			return { data: res.data.guests, status };
+		}
+
+		if (res.data.error) {
+			return { error: res.data.error, status };
+		}
+
+		return { error: "Unknown error getting guests", status };
+	} catch (error) {
+		console.error(error);
+		return { error: error + "", status: -1 };
+	}
+}
+
 type GuestWithEvent = Guest & {
 	event_name: string;
 	event_description: string;
