@@ -58,7 +58,7 @@ declare module "knex/types/tables" {
 		uuid: string;
 		full_name: string;
 		id_number: string;
-		relationship: string;
+		weapon: boolean;
 		entered_at: Date;
 		created_at: Date;
 	}

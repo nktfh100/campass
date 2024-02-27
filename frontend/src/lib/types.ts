@@ -28,7 +28,7 @@ export interface Guest {
 	uuid: string;
 	full_name: string;
 	id_number: string;
-	relationship: string;
+	weapon: boolean;
 	created_at: string;
 	entered_at: string;
 

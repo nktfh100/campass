@@ -103,7 +103,7 @@ export default function GuestModal({
 					</p>
 					<p>{isAdmin ? "אורח" : "אורח שהזמנת"}</p>
 				</ModalHeader>
-				<ModalBody>
+				<ModalBody dir="rtl">
 					<p>
 						<strong>שם מלא:</strong> {guest?.full_name}
 					</p>
@@ -111,7 +111,8 @@ export default function GuestModal({
 						<strong>תעודת זהות:</strong> {guest?.id_number}
 					</p>
 					<p>
-						<strong>קשר:</strong> {guest?.relationship}
+						<strong>נושא נשק אישי:</strong>{" "}
+						{guest?.weapon ? "כן" : "לא"}
 					</p>
 					{isAdmin && (
 						<p>

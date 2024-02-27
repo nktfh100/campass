@@ -65,7 +65,7 @@ export async function seed(knex: Knex): Promise<void> {
 		guests.push({
 			user_id: user.id,
 			event_id: user.event_id,
-			relationship: "אבא",
+			weapon: false,
 			uuid: getRandomUUID(),
 			id_number: `${414082083 + i}`,
 			full_name: getRandomHebrewName(),
@@ -77,7 +77,7 @@ export async function seed(knex: Knex): Promise<void> {
 	guests.push({
 		user_id: 999,
 		event_id: 1,
-		relationship: "אמא",
+		weapon: false,
 		uuid: getRandomUUID(),
 		id_number: "000",
 		full_name: getRandomHebrewName(),

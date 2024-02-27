@@ -27,19 +27,19 @@ export async function deleteGuest(
 export async function createGuest({
 	fullName,
 	idNumber,
-	relationship,
+	weapon,
 	userId,
 }: {
 	fullName: string;
 	idNumber: string;
-	relationship: string;
+	weapon: boolean;
 	userId?: number | string;
 }): Promise<APIResponse<Guest>> {
 	try {
 		const res = await apiClient.post("/guests", {
 			full_name: fullName,
 			id_number: idNumber,
-			relationship,
+			weapon,
 			...(userId ? { user_id: userId } : {}),
 		});
 
@@ -64,18 +64,18 @@ export async function editGuest({
 	guestUUID,
 	fullName,
 	idNumber,
-	relationship,
+	weapon,
 }: {
 	guestUUID: string;
 	fullName: string;
 	idNumber: string;
-	relationship: string;
+	weapon: boolean;
 }): Promise<APIResponse<Guest>> {
 	try {
 		const res = await apiClient.patch(`/guests/${guestUUID}`, {
 			full_name: fullName,
 			id_number: idNumber,
-			relationship,
+			weapon,
 		});
 
 		const status = res.status;

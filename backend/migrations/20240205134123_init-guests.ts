@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string("uuid").unique().notNullable();
 		table.string("full_name").notNullable();
 		table.string("id_number").notNullable();
-		table.string("relationship").notNullable();
+		table.boolean("weapon").defaultTo(false);
 		table.timestamp("entered_at").nullable();
 		table.timestamp("created_at").defaultTo(knex.fn.now());
 	});

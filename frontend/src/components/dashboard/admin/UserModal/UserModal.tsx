@@ -67,8 +67,6 @@ export default function UserModal({
 		}
 	}, [data]);
 
-	console.log("data", data);
-
 	const handleUserDeleteBtn = async () => {
 		if (!user) {
 			return;

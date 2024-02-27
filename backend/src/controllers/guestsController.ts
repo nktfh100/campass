@@ -9,7 +9,7 @@ import { Value } from "@sinclair/typebox/value";
 const guestType = Type.Object({
 	full_name: Type.String(),
 	id_number: Type.String(),
-	relationship: Type.String(),
+	weapon: Type.Boolean(),
 });
 
 const newGuestBody = Type.Composite([
@@ -309,13 +309,13 @@ export const exportGuestsExcel: RouteHandlerMethod = async (request, reply) => {
 	}
 
 	const guests = await knex("guests")
-		.select("full_name", "id_number", "relationship", "entered_at")
+		.select("full_name", "id_number", "weapon")
 		.where("event_id", event_id);
 
-	const data = [["שם מלא", "תעודת זהות", "קשר"]];
+	const data: any[] = [["שם מלא", "תעודת זהות", "נושא נשק"]];
 
 	guests.forEach((guest, _i) => {
-		data.push([guest.full_name, guest.id_number, guest.relationship]);
+		data.push([guest.full_name, guest.id_number, guest.weapon]);
 	});
 
 	reply.header(

@@ -117,7 +117,7 @@ describe("Guests routes", () => {
 			uuid: getRandomUUID(),
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 
 		await fastify.knex("guests").insert(newGuestData);
@@ -180,7 +180,7 @@ describe("Guests routes", () => {
 		const newGuestData: NewGuest = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 
 		const response = await fastify.inject({
@@ -202,7 +202,7 @@ describe("Guests routes", () => {
 		const newGuestData: NewGuest = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 			user_id: 1,
 		};
 
@@ -225,7 +225,7 @@ describe("Guests routes", () => {
 		const newGuestData: NewGuest = {
 			id_number: chance().ssn({ dashes: false }),
 			full_name: chance().name(),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 
 		const response = await fastify.inject({
@@ -250,7 +250,7 @@ describe("Guests routes", () => {
 			payload: {
 				id_number: defaultTestGuest.id_number,
 				full_name: chance().name(),
-				relationship: chance().word(),
+				weapon: chance().bool(),
 			},
 		});
 
@@ -267,7 +267,7 @@ describe("Guests routes", () => {
 			payload: {
 				id_number: chance().ssn({ dashes: false }),
 				full_name: chance().name(),
-				relationship: chance().word(),
+				weapon: chance().bool(),
 				user_id: 999,
 			},
 		});
@@ -284,7 +284,7 @@ describe("Guests routes", () => {
 				uuid: getRandomUUID(),
 				full_name: chance().name(),
 				id_number: chance().ssn({ dashes: false }),
-				relationship: chance().word(),
+				weapon: chance().bool(),
 			};
 			await fastify.knex("guests").insert(newGuestData);
 		}
@@ -298,7 +298,7 @@ describe("Guests routes", () => {
 			payload: {
 				id_number: chance().ssn({ dashes: false }),
 				full_name: chance().name(),
-				relationship: chance().word(),
+				weapon: chance().bool(),
 			},
 		});
 
@@ -332,7 +332,7 @@ describe("Guests routes", () => {
 		const updatedGuestData: Partial<Guest> = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 
 		const response = await fastify.inject({
@@ -354,7 +354,7 @@ describe("Guests routes", () => {
 		const updatedGuestData: Partial<Guest> = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 
 		const response = await fastify.inject({
@@ -431,7 +431,7 @@ describe("Guests routes", () => {
 			uuid,
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 		await fastify.knex("guests").insert(newGuestData);
 
@@ -502,7 +502,7 @@ describe("Guests routes", () => {
 			uuid,
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
-			relationship: chance().word(),
+			weapon: chance().bool(),
 		};
 		await fastify.knex("guests").insert(newGuestData);
 

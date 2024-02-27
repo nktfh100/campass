@@ -18,7 +18,7 @@ const guestType = Type.Object({
 	uuid: Type.String(),
 	full_name: Type.String(),
 	id_number: Type.String(),
-	relationship: Type.String(),
+	weapon: Type.Boolean(),
 	entered_at: Type.Optional(Type.String()),
 });
 
@@ -26,7 +26,7 @@ const createGuestSchema: FastifySchema = {
 	body: Type.Object({
 		full_name: Type.String(),
 		id_number: Type.String(),
-		relationship: Type.String(),
+		weapon: Type.Optional(Type.Boolean()),
 		user_id: Type.Optional(Type.Number()),
 	}),
 	response: {

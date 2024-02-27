@@ -21,7 +21,7 @@ export const defaultTestGuest: Omit<Guest, "created_at" | "entered_at"> = {
 	uuid: "c2a0f8c9-3d6b-4e1e-9c2e-2a6d0d7c4f1d",
 	full_name: "John Doe",
 	id_number: "414055484",
-	relationship: "father",
+	weapon: false,
 };
 
 // Seed data for the test environment
@@ -48,6 +48,6 @@ export async function seed(knex: Knex): Promise<void> {
 		uuid: "c2a0f8c9-3d6b-4e1e-9c2e-2a6d0d7c4f1e",
 		full_name: "Jane Doe",
 		id_number: "414055485",
-		relationship: "mother",
+		weapon: false,
 	});
 }

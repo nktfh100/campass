@@ -9,6 +9,7 @@ import {
 	openYesNoGlobalModal,
 } from "@/stores/useGlobalModalStore";
 import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
 import { Input } from "@nextui-org/input";
 import {
 	Modal,
@@ -51,7 +52,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 
 	const [fullName, setFullName] = useState("");
 	const [idNumber, setIdNumber] = useState("");
-	const [relationship, setRelationship] = useState("");
+	const [weapon, setWeapon] = useState(false);
 
 	const [idNumberError, setIdNumberError] = useState("");
 
@@ -63,7 +64,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 		if (modalType == ModalType.EDIT && guest && isOpen) {
 			setFullName(guest.full_name);
 			setIdNumber(guest.id_number);
-			setRelationship(guest.relationship);
+			setWeapon(guest.weapon);
 		}
 	}, [guest, isOpen, modalType]);
 
@@ -71,7 +72,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 		if (!open) {
 			setFullName("");
 			setIdNumber("");
-			setRelationship("");
+			setWeapon(false);
 			setError("");
 			setIdNumberError("");
 			setIsSubmitting(false);
@@ -99,13 +100,13 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 				guestUUID: guest!.uuid,
 				fullName,
 				idNumber,
-				relationship,
+				weapon,
 			});
 		} else {
 			apiRes = await createGuest({
 				fullName,
 				idNumber,
-				relationship,
+				weapon,
 				...(isAdmin ? { userId } : {}),
 			});
 		}
@@ -126,12 +127,13 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 					bodyText: `האורח ${apiRes.data.full_name} נוסף בהצלחה`,
 				});
 			} else {
+				const newGuest = { ...guest, ...apiRes.data };
 				if (onGuestEdited) {
-					onGuestEdited({ ...guest, ...apiRes.data });
+					onGuestEdited(newGuest);
 				}
 				setGuests((prev) =>
 					prev.map((g) =>
-						g.uuid == apiRes.data!.uuid ? apiRes.data! : g
+						g.uuid == apiRes.data!.uuid ? newGuest : g
 					)
 				);
 			}
@@ -229,15 +231,15 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							errorMessage={idNumberError}
 							disabled={isSubmitting}
 						/>
-						<Input
-							label="קשר"
-							placeholder="קשר"
-							variant="bordered"
-							isRequired
-							value={relationship}
-							onValueChange={(value) => setRelationship(value)}
+						<Checkbox
+							isSelected={weapon}
+							onValueChange={setWeapon}
 							disabled={isSubmitting}
-						/>
+						>
+							<p style={{ marginRight: "0.5rem" }}>
+								נושא נשק אישי
+							</p>
+						</Checkbox>
 					</ModalBody>
 					<ModalFooter className={stylesShared["modal__footer"]}>
 						{error && (
