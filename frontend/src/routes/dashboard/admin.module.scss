@@ -14,6 +14,12 @@
 	margin-bottom: 1rem;
 }
 
+@media screen and (min-width: 900px) {
+	.select-event {
+		width: 45rem;
+	}
+}
+
 .event-name {
 	margin-bottom: 1rem;
 }

@@ -1,9 +1,9 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
-import { Guest } from '@/lib/types';
-import { Card, CardBody } from '@nextui-org/card';
+import { Guest } from "@/lib/types";
+import { Card, CardBody } from "@nextui-org/card";
 
-import styles from './ScanResultsCard.module.scss';
+import styles from "./ScanResultsCard.module.scss";
 
 export default function ScanResultsCard({
 	error,
@@ -18,21 +18,32 @@ export default function ScanResultsCard({
 		return null;
 	}
 
+	const isScannedAlready = guest?.entered_at != "";
+
 	return (
 		<Card
-			className={`${styles["card"]} ${error ? styles["card--error"] : styles["card--success"]}`}
+			className={`${styles["card"]} ${error ? styles["card--error"] : ""} ${isScannedAlready ? styles["card--warning"] : styles["card--success"]}`}
 		>
 			<CardBody className={styles["card__body"]} dir="rtl">
 				<p className={styles["card__header"]}>
 					{error ? "שגיאה" : "מאושר"}
 				</p>
+				{isScannedAlready && (
+					<p className={styles["card__warning"]}>
+						כרטיס זה כבר נסרק!
+					</p>
+				)}
 
-				{error && <p>{error}</p>}
+				{error && <p className="text-danger">שגיאה: {error}</p>}
 
 				{guest && (
 					<>
-						<p>שם: {guest?.full_name}</p>
-						<p>תעודת זהות: {guest?.id_number}</p>
+						<p>
+							<strong>שם:</strong> {guest?.full_name}
+						</p>
+						<p>
+							<strong>תעודת זהות:</strong> {guest?.id_number}
+						</p>
 					</>
 				)}
 			</CardBody>

@@ -6,6 +6,21 @@
 	margin-top: 0.5rem;
 }
 
+.form__inputs {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 95%;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+@media (min-width: 900px) {
+	.form__inputs {
+		width: 30rem;
+	}
+}
+
 .form__error {
 	opacity: 1;
 }

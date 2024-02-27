@@ -143,7 +143,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 					<ModalBody dir="rtl">
 						<Input
 							label="שם האירוע"
-							placeholder="שם האירוע"
+							placeholder='טקס סיום אפ"מ 10/02'
 							variant="bordered"
 							isRequired
 							value={name}
@@ -154,7 +154,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 						<Input
 							type="number"
 							label="מספר מוזמנים לבן אדם"
-							placeholder="מספר מוזמנים"
+							placeholder="3"
 							variant="bordered"
 							isRequired
 							value={invitationCount as any}

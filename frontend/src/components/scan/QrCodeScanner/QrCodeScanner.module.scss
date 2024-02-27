@@ -12,3 +12,9 @@
 		border-radius: 0.75rem;
 	}
 }
+
+@media screen and (min-width: 900px) {
+	.scanner__video {
+		width: 40rem;
+	}
+}

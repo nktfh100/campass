@@ -73,26 +73,32 @@ export default function LoginForm<T>({
 
 	return (
 		<form onSubmit={handleFormSubmit} className={styles["form"]} dir="rtl">
-			{formType == LoginFormType.Admin && (
+			<div className={styles["form__inputs"]}>
+				{formType == LoginFormType.Admin && (
+					<Input
+						type="text"
+						label="שם משתמש"
+						value={username}
+						onValueChange={(value: string) => setUsername(value)}
+						className={styles["form__username"]}
+						isRequired
+					/>
+				)}
 				<Input
-					type="text"
-					label="שם משתמש"
-					value={username}
-					onValueChange={(value: string) => setUsername(value)}
-					className={styles["form__username"]}
+					type={
+						formType == LoginFormType.IdNumber ? "text" : "password"
+					}
+					label={
+						formType == LoginFormType.IdNumber
+							? "תעודת זהות"
+							: "סיסמה"
+					}
+					value={password}
+					onValueChange={(value: string) => setPassword(value)}
+					className={styles["form__password"]}
 					isRequired
 				/>
-			)}
-			<Input
-				type={formType == LoginFormType.IdNumber ? "text" : "password"}
-				label={
-					formType == LoginFormType.IdNumber ? "תעודת זהות" : "סיסמה"
-				}
-				value={password}
-				onValueChange={(value: string) => setPassword(value)}
-				className={styles["form__password"]}
-				isRequired
-			/>
+			</div>
 			{error && (
 				<p className={`${styles["form__error"]} text-danger`}>
 					שגיאה: {error}

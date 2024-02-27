@@ -38,7 +38,7 @@ export default function AdminTabs({
 			color="primary"
 			size="lg"
 			selectedKey={activeTab}
-			onSelectionChange={setActiveTab as any}
+			onSelectionChange={(key) => setActiveTab(key as string)}
 		>
 			{showAdminsTab && (
 				<Tab key="admins" title="מפקדים" className={styles["tab"]}>

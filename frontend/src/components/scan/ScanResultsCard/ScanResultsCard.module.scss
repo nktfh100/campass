@@ -12,8 +12,18 @@
 	background-color: hsl(var(--nextui-success));
 }
 
+.card--warning {
+	background-color: hsl(var(--nextui-warning));
+	color: black;
+}
+
 .card__header {
 	margin-bottom: 0.2rem;
+	font-weight: bold;
+}
+
+.card__warning {
+	font-size: 1.4rem;
 	font-weight: bold;
 }
 
@@ -29,4 +39,11 @@
 	height: 0.5rem;
 	background-color: hsl(var(--nextui-secondary));
 	border-radius: 0.25rem;
+}
+
+@media screen and (min-width: 900px) {
+	.card {
+		margin-top: 2rem;
+		font-size: 1.6rem;
+	}
 }

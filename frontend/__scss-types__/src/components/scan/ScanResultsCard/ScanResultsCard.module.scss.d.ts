@@ -3,8 +3,10 @@ export type Styles = {
   card__body: string;
   card__header: string;
   "card__loading-bar": string;
+  card__warning: string;
   "card--error": string;
   "card--success": string;
+  "card--warning": string;
 };
 
 export type ClassNames = keyof Styles;

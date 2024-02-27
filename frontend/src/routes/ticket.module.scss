@@ -4,7 +4,7 @@
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	margin-top: 3.5rem;
+	margin-top: 1rem;
 	gap: 0.5rem;
 }
 
@@ -13,4 +13,18 @@
 	width: 90vw;
 	height: 90vw;
 	border-radius: 0.5rem;
+}
+
+@media screen and (min-width: 700px) {
+	.qr {
+		width: 30rem;
+		height: 30rem;
+	}
+}
+
+@media print {
+	.qr {
+		width: 25rem;
+		height: 25rem;
+	}
 }

@@ -6,15 +6,7 @@ import { Select, SelectItem } from "@nextui-org/select";
 
 import styles from "./SelectEvent.module.scss";
 
-export default function SelectEvent({
-	events,
-	// selectedEventId,
-	// setSelectedEvent,
-}: {
-	// selectedEventId: string | undefined;
-	events: Event[];
-	// setSelectedEvent: (id: number) => void;
-}) {
+export default function SelectEvent({ events }: { events: Event[] }) {
 	const { activeEvent, setActiveEvent } = useContext(ActiveEventContext);
 
 	return (

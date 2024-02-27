@@ -1,6 +1,7 @@
 export type Styles = {
   form: string;
   form__error: string;
+  form__inputs: string;
   form__password: string;
   form__username: string;
 };
