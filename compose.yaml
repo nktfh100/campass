@@ -13,6 +13,12 @@ services:
             - ADMIN_PASSWORD=admin
             - JWT_SECRET=secret
             - FRONTEND_URL=http://localhost
+        healthcheck:
+            test: curl --fail http://localhost:8080/health || exit 1
+            interval: 30s
+            timeout: 15s
+            retries: 5
+            start_period: 10s
     dozzle: # log viewer
         container_name: dozzle
         restart: unless-stopped

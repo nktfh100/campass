@@ -29,6 +29,10 @@ export default async function buildFastify(
 		return "API is up!";
 	});
 
+	fastify.get("/health", async (request) => {
+		return { status: "ok" };
+	});
+
 	// Add fastify instance to the request object
 	fastify.decorateRequest("fastify", null);
 	fastify.addHook("onRequest", async (request) => {

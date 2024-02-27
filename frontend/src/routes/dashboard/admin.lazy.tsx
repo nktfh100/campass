@@ -52,8 +52,6 @@ function DashboardAdminIndex() {
 	} = useQuery({
 		queryKey: ["events", role, eventId],
 		queryFn: async () => {
-			console.log("role", role);
-			console.log("eventId", eventId);
 			if (role == 0) {
 				const { data, error, status } = await getEvents();
 
