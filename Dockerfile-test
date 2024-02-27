@@ -12,6 +12,7 @@ RUN npm run build
 
 RUN chmod +x /app/entrypoint.sh
 
-HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+HEALTHCHECK --interval=10s --timeout=15s --start-period=1s --retries=4 \
+    CMD curl -f http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
