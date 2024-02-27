@@ -1,8 +1,7 @@
 export type Styles = {
-  admin: string;
-  "event-name": string;
-  "select-event": string;
-  spinner: string;
+  modal__buttons: string;
+  modal__footer: string;
+  modal__header: string;
 };
 
 export type ClassNames = keyof Styles;

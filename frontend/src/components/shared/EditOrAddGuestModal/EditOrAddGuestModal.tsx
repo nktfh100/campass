@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import GuestsContext from "@/contexts/GuestsContext";
 import { createGuest, editGuest } from "@/lib/api/guests";
 import { APIResponse, Guest, ModalType } from "@/lib/types";
@@ -14,7 +15,6 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import { MessageModalType } from "../MessageModal/MessageModal";
 import styles from "./EditOrAddGuestModal.module.scss";
 
 interface BaseModalProps {
@@ -171,7 +171,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							variant="bordered"
 							isRequired
 							value={fullName}
-							onChange={(e) => setFullName(e.target.value)}
+							onValueChange={(value) => setFullName(value)}
 							disabled={isSubmitting}
 						/>
 						<Input
@@ -180,7 +180,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							variant="bordered"
 							isRequired
 							value={idNumber}
-							onChange={(e) => setIdNumber(e.target.value)}
+							onValueChange={(value) => setIdNumber(value)}
 							isInvalid={!!idNumberError}
 							errorMessage={idNumberError}
 							disabled={isSubmitting}
@@ -191,7 +191,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							variant="bordered"
 							isRequired
 							value={relationship}
-							onChange={(e) => setRelationship(e.target.value)}
+							onValueChange={(value) => setRelationship(value)}
 							disabled={isSubmitting}
 						/>
 					</ModalBody>

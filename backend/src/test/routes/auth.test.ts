@@ -25,6 +25,7 @@ describe("Auth routes", () => {
 			method: "POST",
 			url: "/auth/admin",
 			payload: {
+				username: "admin",
 				password: config.adminPassword,
 			},
 		});
@@ -38,6 +39,7 @@ describe("Auth routes", () => {
 			method: "POST",
 			url: "/auth/admin",
 			payload: {
+				username: "admin",
 				password: "wrong_password",
 			},
 		});
@@ -45,7 +47,7 @@ describe("Auth routes", () => {
 		expect(response.statusCode).toBe(401);
 	});
 
-	test("POST /auth/admin with missing password should return a 400", async () => {
+	test("POST /auth/admin with missing password/username should return a 400", async () => {
 		const response = await fastify.inject({
 			method: "POST",
 			url: "/auth/admin",
@@ -55,7 +57,7 @@ describe("Auth routes", () => {
 		expect(response.statusCode).toBe(400);
 	});
 
-	test("POST /auth/user with valid id number should return a token and user id", async () => {
+	test("POST /auth/user with valid id number should return a token", async () => {
 		const response = await fastify.inject({
 			method: "POST",
 			url: "/auth/user",
@@ -67,10 +69,7 @@ describe("Auth routes", () => {
 		const jsonRes = response.json();
 
 		expect(response.statusCode).toBe(200);
-		expect(jsonRes).toMatchObject({
-			token: expect.any(String),
-			userId: defaultTestUser.id,
-		});
+		expect(jsonRes).toMatchObject({ token: expect.any(String) });
 	});
 
 	test("POST /auth/user with invalid id number should return a 401", async () => {

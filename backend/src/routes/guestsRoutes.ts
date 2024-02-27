@@ -7,6 +7,7 @@ import {
 	getGuests,
 	updateGuest,
 } from "@/controllers/guestsController";
+import { AdminRole } from "@/lib/types";
 import { Type } from "@sinclair/typebox";
 
 const guestType = Type.Object({
@@ -98,7 +99,10 @@ const guestsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/",
 		handler: createGuest,
 		schema: createGuestSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin, fastify.verifyUser]),
+		onRequest: fastify.auth([
+			fastify.verifyUser,
+			fastify.verifyAdmin(AdminRole.EventAdmin),
+		]),
 	});
 
 	fastify.route({
@@ -106,7 +110,10 @@ const guestsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/",
 		handler: getGuests,
 		schema: getGuestsSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin, fastify.verifyUser]),
+		onRequest: fastify.auth([
+			fastify.verifyUser,
+			fastify.verifyAdmin(AdminRole.EventAdmin),
+		]),
 	});
 
 	// Public route (used by scanner page)
@@ -122,14 +129,20 @@ const guestsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/:uuid",
 		handler: updateGuest,
 		schema: updateGuestSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin, fastify.verifyUser]),
+		onRequest: fastify.auth([
+			fastify.verifyUser,
+			fastify.verifyAdmin(AdminRole.EventAdmin),
+		]),
 	});
 
 	fastify.route({
 		method: "DELETE",
 		url: "/:uuid",
 		handler: deleteGuest,
-		onRequest: fastify.auth([fastify.verifyAdmin, fastify.verifyUser]),
+		onRequest: fastify.auth([
+			fastify.verifyUser,
+			fastify.verifyAdmin(AdminRole.EventAdmin),
+		]),
 	});
 
 	done();

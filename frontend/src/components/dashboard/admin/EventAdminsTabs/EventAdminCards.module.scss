@@ -1,0 +1,22 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: 100%;
+	margin-top: 0.5rem;
+}
+
+.cards {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: 100%;
+}
+
+.spinner {
+	margin: 1rem 0;
+}

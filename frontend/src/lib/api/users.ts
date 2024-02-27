@@ -1,7 +1,5 @@
 import apiClient from "@/lib/api/api";
-import { APIResponse, User } from "@/lib/types";
-
-import { ApiPagination } from "../types";
+import { ApiPagination, APIResponse, User } from "@/lib/types";
 
 export async function createUser({
 	eventId,

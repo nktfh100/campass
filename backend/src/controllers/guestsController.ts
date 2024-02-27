@@ -1,5 +1,6 @@
 import { RouteHandlerMethod } from "fastify";
 
+import { AdminRole } from "@/lib/types";
 import { getRandomUUID } from "@/utils/utils";
 import { Static, Type } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
@@ -29,7 +30,7 @@ export const createGuest: RouteHandlerMethod = async (request, reply) => {
 	if (request.userData) {
 		// Make sure the user is not trying to create a guest for someone else
 		newGuestData.user_id = request.userData.id;
-	} else if (request.admin && !newGuestData.user_id) {
+	} else if (request.adminData && !newGuestData.user_id) {
 		reply.status(400);
 		return { error: "user_id is required" };
 	}
@@ -92,13 +93,24 @@ export const createGuest: RouteHandlerMethod = async (request, reply) => {
 
 export const getGuests: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
-	const { page, limit, event_id } = request.query as {
-		page: number;
-		limit: number;
-		event_id?: number;
-	};
 
-	if (request.admin) {
+	// Only return the user's guests
+	if (request.userData) {
+		const guests = await knex("guests")
+			.select("*")
+			.where("user_id", request.userData.id)
+			.orderBy("full_name");
+
+		return { guests };
+	}
+
+	if (request.adminData) {
+		const { page, limit, event_id } = request.query as {
+			page: number;
+			limit: number;
+			event_id?: number;
+		};
+
 		const offset = (page - 1) * limit;
 
 		const query = knex("guests");
@@ -138,16 +150,6 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 				totalCount: totalCount?.count || 0,
 			},
 		};
-	}
-
-	// Only return the user's guests
-	if (request.userData) {
-		const guests = await knex("guests")
-			.select("*")
-			.where("user_id", request.userData.id)
-			.orderBy("full_name");
-
-		return { guests };
 	}
 };
 
@@ -209,6 +211,16 @@ export const updateGuest: RouteHandlerMethod = async (request, reply) => {
 		return {
 			error: "You do not have permission to update this guest",
 		};
+	} else if (
+		request.adminData &&
+		request.adminData.role != AdminRole.SuperAdmin &&
+		guest.event_id != request.adminData.eventId
+	) {
+		// If request by admin - make sure the admin is from the same event
+		reply.status(403);
+		return {
+			error: "You do not have permission to update this guest",
+		};
 	}
 
 	const [newGuest] = await knex("guests")
@@ -230,8 +242,12 @@ export const deleteGuest: RouteHandlerMethod = async (request, reply) => {
 		return;
 	}
 
-	if (request.userData) {
-		// Make sure the user owns the guest
+	if (request.adminData && request.adminData.role != AdminRole.SuperAdmin) {
+		if (guest.event_id != request.adminData.eventId) {
+			reply.status(403);
+			return;
+		}
+	} else if (request.userData) {
 		if (guest.user_id !== request.userData.id) {
 			reply.status(403);
 			return;

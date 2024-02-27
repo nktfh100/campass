@@ -3,24 +3,35 @@ import { Knex } from "knex";
 
 import FastifyJwtNamespace from "@fastify/jwt";
 
+import { AdminRole, AdminTokenData, UserTokenData } from "./types";
+
 declare module "fastify" {
 	interface FastifyInstance
 		extends FastifyJwtNamespace<{ namespace: "security" }> {
 		knex: Knex;
-		verifyAdmin: onRequestAsyncHookHandler;
+		verifyAdmin: (role: AdminRole) => onRequestAsyncHookHandler;
 		verifyUser: onRequestAsyncHookHandler;
 	}
 
 	interface FastifyRequest {
 		fastify: FastifyInstance;
-		admin?: boolean;
-		userData?: {
-			id: number;
-		};
+		adminData?: AdminTokenData;
+		userData?: UserTokenData;
 	}
 }
 
 declare module "knex/types/tables" {
+	interface Admin {
+		id: number;
+		event_id: number;
+		username: string;
+		password: string;
+		role: AdminRole;
+		created_at: Date;
+	}
+
+	type NewAdmin = Omit<Admin, "id" | "created_at">;
+
 	interface Event {
 		id: number;
 		name: string;

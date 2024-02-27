@@ -3,7 +3,7 @@ import { FastifyInstance } from "fastify";
 import { NewEvent } from "knex/types/tables";
 
 import buildFastify from "@/app";
-import { getTestAdminToken } from "@/utils/tests/getTokens";
+import { getTestSuperAdminToken } from "@/utils/tests/getTokens";
 import setupTestDB from "@/utils/tests/setupTestDB";
 
 import { defaultTestEvent } from "../../../seeds/test/testData";
@@ -18,7 +18,7 @@ describe("Events routes", () => {
 
 			await setupTestDB(fastify.knex);
 
-			adminToken = await getTestAdminToken(fastify);
+			adminToken = await getTestSuperAdminToken(fastify);
 		})();
 	});
 

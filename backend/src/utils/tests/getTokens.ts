@@ -3,11 +3,12 @@ import { FastifyInstance } from "fastify";
 import { defaultTestUser } from "@/../seeds/test/testData";
 import config from "@/lib/config";
 
-export async function getTestAdminToken(fastify: FastifyInstance) {
+export async function getTestSuperAdminToken(fastify: FastifyInstance) {
 	const response = await fastify.inject({
 		method: "POST",
 		url: "/auth/admin",
 		payload: {
+			username: "admin",
 			password: config.adminPassword,
 		},
 	});
@@ -30,7 +31,7 @@ export async function getTestUserToken(fastify: FastifyInstance) {
 	});
 	const jsonRes = response.json();
 
-	if (response.statusCode !== 200 || !jsonRes.token) {
+	if (response.statusCode != 200 || !jsonRes.token) {
 		throw new Error("Failed to get test user token");
 	}
 

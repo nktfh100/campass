@@ -1,12 +1,13 @@
 import { RouteHandlerMethod } from "fastify";
 
+import { AdminRole } from "@/lib/types";
 import { Static, Type } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 const userType = Type.Object({
 	id_number: Type.String(),
 	full_name: Type.String(),
-	event_id: Type.Number(),
+	event_id: Type.Optional(Type.Number()),
 });
 
 type newUserBodyType = Static<typeof userType>;
@@ -24,6 +25,15 @@ export const createUser: RouteHandlerMethod = async (request, reply) => {
 	if (userExist) {
 		reply.status(409);
 		return { error: "A user with that ID number already exists" };
+	}
+
+	if (request.adminData!.role == AdminRole.SuperAdmin) {
+		if (!newUserData.event_id) {
+			reply.status(400);
+			return { error: "event_id is required" };
+		}
+	} else {
+		newUserData.event_id = request.adminData!.eventId;
 	}
 
 	// Make sure the event exists
@@ -53,9 +63,9 @@ export const getUser: RouteHandlerMethod = async (request, reply) => {
 	if (request.userData) {
 		if (id == "me") {
 			id = request.userData.id + "";
-		} else if ("" + request.userData.id != id) {
+		} else if (request.userData.id + "" != id) {
 			// Make sure the user is not trying to get someone else's data
-			reply.status(401);
+			reply.status(403);
 			return;
 		}
 	}
@@ -75,20 +85,33 @@ export const getUser: RouteHandlerMethod = async (request, reply) => {
 		return { error: "User not found" };
 	}
 
+	if (request.adminData) {
+		if (
+			request.adminData.role != AdminRole.SuperAdmin &&
+			user.event_id != request.adminData.eventId
+		) {
+			reply.status(403);
+			return;
+		}
+	}
+
 	return { user };
 };
 
 export const getUsers: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
-	const { page, limit, event_id } = request.query as {
+	let { page, limit, event_id } = request.query as {
 		page: number;
 		limit: number;
-		event_id: number;
+		event_id?: number;
 	};
-
-	if (!event_id) {
-		reply.status(400);
-		return { error: "Event ID query is required" };
+	if (request.adminData?.role == AdminRole.SuperAdmin) {
+		if (!event_id) {
+			reply.status(400);
+			return { error: "Event ID query is required" };
+		}
+	} else {
+		event_id = request.adminData?.eventId;
 	}
 
 	const offset = (page - 1) * limit;
@@ -132,6 +155,18 @@ export const updateUser: RouteHandlerMethod = async (request, reply) => {
 		request.body
 	) as updateUserBodyType;
 
+	if (request.adminData?.role != AdminRole.SuperAdmin) {
+		const user = await knex("users")
+			.select("event_id")
+			.where("id", id)
+			.first();
+
+		if (user && user.event_id != request.adminData?.eventId) {
+			reply.status(403);
+			return;
+		}
+	}
+
 	const user = await knex("users")
 		.where("id", id)
 		.update(newUserData)
@@ -148,6 +183,18 @@ export const updateUser: RouteHandlerMethod = async (request, reply) => {
 export const deleteUser: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
 	const { id } = request.params as { id: string };
+
+	if (request.adminData?.role != AdminRole.SuperAdmin) {
+		const user = await knex("users")
+			.select("event_id")
+			.where("id", id)
+			.first();
+
+		if (user && user.event_id != request.adminData?.eventId) {
+			reply.status(403);
+			return;
+		}
+	}
 
 	await knex("users").where("id", id).del();
 

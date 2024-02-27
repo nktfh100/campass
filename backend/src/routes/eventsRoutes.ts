@@ -7,6 +7,7 @@ import {
 	getEvents,
 	updateEvent,
 } from "@/controllers/eventsController";
+import { AdminRole } from "@/lib/types";
 import { Type } from "@sinclair/typebox";
 
 const eventType = Type.Object({
@@ -58,13 +59,12 @@ const updateEventSchema: FastifySchema = {
 };
 
 const eventsRoutes: FastifyPluginCallback = (fastify, options, done) => {
-	fastify.addHook("onRequest", fastify.auth([fastify.verifyAdmin]));
-
 	fastify.route({
 		method: "POST",
 		url: "/",
 		handler: createEvent,
 		schema: createEventSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.SuperAdmin)]),
 	});
 
 	fastify.route({
@@ -72,6 +72,7 @@ const eventsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/",
 		handler: getEvents,
 		schema: getEventsSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.SuperAdmin)]),
 	});
 
 	fastify.route({
@@ -79,6 +80,7 @@ const eventsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/:id",
 		handler: getEvent,
 		schema: getEventSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
 	});
 
 	fastify.route({
@@ -86,12 +88,14 @@ const eventsRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/:id",
 		handler: updateEvent,
 		schema: updateEventSchema,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.SuperAdmin)]),
 	});
 
 	fastify.route({
 		method: "DELETE",
 		url: "/:id",
 		handler: deleteEvent,
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.SuperAdmin)]),
 	});
 
 	done();

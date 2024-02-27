@@ -24,7 +24,7 @@ export async function createEvent({
 			return { error: res.data.error, status };
 		}
 
-		return { error: "Unknown error creating guest", status };
+		return { error: "Unknown error creating event", status };
 	} catch (error) {
 		console.error(error);
 		return { error: error + "", status: -1 };
@@ -56,7 +56,7 @@ export async function editEvent({
 			return { error: res.data.error, status };
 		}
 
-		return { error: "Unknown error creating event", status };
+		return { error: "Unknown error editing event", status };
 	} catch (error) {
 		console.error(error);
 		return { error: error + "", status: -1 };
@@ -79,7 +79,7 @@ export async function deleteEvent(
 			return { error: res.data.error, status };
 		}
 
-		return { error: "Unknown error creating event", status };
+		return { error: "Unknown error deleting event", status };
 	} catch (error) {
 		console.error(error);
 		return { error: error + "", status: -1 };
@@ -100,7 +100,30 @@ export async function getEvents(): Promise<APIResponse<Event[]>> {
 			return { error: res.data.error, status };
 		}
 
-		return { error: "Unknown error creating event", status };
+		return { error: "Unknown error getting events", status };
+	} catch (error) {
+		console.error(error);
+		return { error: error + "", status: -1 };
+	}
+}
+
+export async function getEvent(
+	eventId: string | number
+): Promise<APIResponse<Event>> {
+	try {
+		const res = await apiClient.get(`/events/${eventId}`);
+
+		const status = res.status;
+
+		if (res.data.event) {
+			return { data: res.data.event, status };
+		}
+
+		if (res.data.error) {
+			return { error: res.data.error, status };
+		}
+
+		return { error: "Unknown error getting event", status };
 	} catch (error) {
 		console.error(error);
 		return { error: error + "", status: -1 };

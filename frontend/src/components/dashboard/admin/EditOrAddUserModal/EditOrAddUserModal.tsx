@@ -165,7 +165,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								variant="bordered"
 								isRequired
 								value={fullName}
-								onChange={(e) => setFullName(e.target.value)}
+								onValueChange={(value) => setFullName(value)}
 								isInvalid={!!fullNameError}
 								errorMessage={fullNameError}
 								disabled={isSubmitting}
@@ -176,7 +176,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								variant="bordered"
 								isRequired
 								value={idNumber}
-								onChange={(e) => setIdNumber(e.target.value)}
+								onValueChange={(value) => setIdNumber(value)}
 								isInvalid={!!idNumberError}
 								errorMessage={idNumberError}
 								disabled={isSubmitting}

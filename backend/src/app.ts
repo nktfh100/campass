@@ -1,4 +1,5 @@
 import Fastify, { FastifyServerOptions } from "fastify";
+import fastifyBcrypt from "fastify-bcrypt";
 
 import knexConfig from "@/../knexfile";
 import { verifyAdmin, verifyUser } from "@/hooks/authHooks";
@@ -12,6 +13,8 @@ import fastifyAuth from "@fastify/auth";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+
+import adminsRoutes from "./routes/adminsRoutes";
 
 export default async function buildFastify(
 	extraOpts?: Partial<FastifyServerOptions>
@@ -44,12 +47,17 @@ export default async function buildFastify(
 		secret: config.jwtSecret!,
 	});
 
+	await fastify.register(fastifyBcrypt, {
+		saltWorkFactor: 12,
+	});
+
 	fastify.decorate("verifyAdmin", verifyAdmin);
 	fastify.decorate("verifyUser", verifyUser);
 	await fastify.register(fastifyAuth);
 
 	// Register routes
 	await fastify.register(authRoutes, { prefix: "/auth" });
+	await fastify.register(adminsRoutes, { prefix: "/admins" });
 	await fastify.register(eventsRoutes, { prefix: "/events" });
 	await fastify.register(usersRoutes, { prefix: "/users" });
 	await fastify.register(guestsRoutes, { prefix: "/guests" });

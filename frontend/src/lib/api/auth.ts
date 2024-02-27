@@ -1,12 +1,15 @@
-import { APIResponse } from "../types";
+import { APIResponse } from "@/lib/types";
+
 import apiClient from "./api";
 
 export async function adminAuth(
-	password: string
+	password: string,
+	username: string
 ): Promise<APIResponse<string>> {
 	try {
 		const res = await apiClient.post("/auth/admin", {
 			password,
+			username,
 		});
 
 		const status = res.status;

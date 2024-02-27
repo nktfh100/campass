@@ -1,3 +1,11 @@
+export interface Admin {
+	id: number;
+	event_id: number;
+	username: string;
+	role: number;
+	created_at: string;
+}
+
 export interface Event {
 	id: number;
 	name: string;

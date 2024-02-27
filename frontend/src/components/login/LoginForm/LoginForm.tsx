@@ -9,13 +9,13 @@ import { useNavigate } from "@tanstack/react-router";
 import styles from "./LoginForm.module.scss";
 
 export enum LoginFormType {
-	Password = "password",
+	Admin = "admin",
 	IdNumber = "idNumber",
 }
 
 interface BaseProps<T = string> {
 	formType: LoginFormType;
-	apiFunction: (arg: string) => Promise<APIResponse<T>>;
+	apiFunction: (...args: any[]) => Promise<APIResponse<T>>;
 }
 
 interface RedirectProps {
@@ -39,6 +39,7 @@ export default function LoginForm<T>({
 }: LoginFormProps<T>) {
 	const navigate = useNavigate();
 
+	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -48,7 +49,7 @@ export default function LoginForm<T>({
 
 		setError("");
 		setIsLoading(true);
-		const { data, error } = await apiFunction(password);
+		const { data, error } = await apiFunction(password, username);
 
 		setIsLoading(false);
 
@@ -72,6 +73,16 @@ export default function LoginForm<T>({
 
 	return (
 		<form onSubmit={handleFormSubmit} className={styles["form"]} dir="rtl">
+			{formType == LoginFormType.Admin && (
+				<Input
+					type="text"
+					label="שם משתמש"
+					value={username}
+					onValueChange={(value: string) => setUsername(value)}
+					className={styles["form__username"]}
+					isRequired
+				/>
+			)}
 			<Input
 				type={formType == LoginFormType.IdNumber ? "text" : "password"}
 				label={

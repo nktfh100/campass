@@ -1,5 +1,6 @@
 import { useContext } from "react";
 
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import GuestsContext from "@/contexts/GuestsContext";
 import { deleteGuest } from "@/lib/api/guests";
 import { APIResponse, Guest } from "@/lib/types";
@@ -16,7 +17,6 @@ import {
 	ModalHeader,
 } from "@nextui-org/modal";
 
-import { MessageModalType } from "../MessageModal/MessageModal";
 import styles from "./GuestModal.module.scss";
 
 export default function GuestModal({

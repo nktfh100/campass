@@ -7,6 +7,7 @@ import {
 	getUsers,
 	updateUser,
 } from "@/controllers/usersController";
+import { AdminRole } from "@/lib/types";
 import { Type } from "@sinclair/typebox";
 
 export const userType = Type.Object({
@@ -77,7 +78,7 @@ const usersRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/",
 		handler: createUser,
 		schema: createUserSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin]),
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
 	});
 
 	fastify.route({
@@ -85,7 +86,7 @@ const usersRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/",
 		handler: getUsers,
 		schema: getUsersSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin]),
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
 	});
 
 	fastify.route({
@@ -93,14 +94,17 @@ const usersRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/:id",
 		handler: getUser,
 		schema: getUserSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin, fastify.verifyUser]),
+		onRequest: fastify.auth([
+			fastify.verifyUser,
+			fastify.verifyAdmin(AdminRole.EventAdmin),
+		]),
 	});
 
 	fastify.route({
 		method: "DELETE",
 		url: "/:id",
 		handler: deleteUser,
-		onRequest: fastify.auth([fastify.verifyAdmin]),
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
 	});
 
 	fastify.route({
@@ -108,7 +112,7 @@ const usersRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		url: "/:id",
 		handler: updateUser,
 		schema: updateUserSchema,
-		onRequest: fastify.auth([fastify.verifyAdmin]),
+		onRequest: fastify.auth([fastify.verifyAdmin(AdminRole.EventAdmin)]),
 	});
 
 	done();

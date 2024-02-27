@@ -7,9 +7,9 @@ import NoEvents from "@/components/dashboard/admin/NoEvents/NoEvents";
 import SelectEvent from "@/components/dashboard/admin/SelectEvent/SelectEvent";
 import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
 import ActiveEventContext from "@/contexts/ActiveEventContext";
-import { deleteEvent, getEvents } from "@/lib/api/events";
+import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";
+import { deleteEvent, getEvent, getEvents } from "@/lib/api/events";
 import { APIResponse, Event, ModalType } from "@/lib/types";
-import useEnsureTokenValid from "@/stores/useEnsureTokenValid";
 import {
 	openGlobalModal,
 	openYesNoGlobalModal,
@@ -40,16 +40,40 @@ function DashboardAdminIndex() {
 		setEventModalType(modalType);
 	};
 
-	useEnsureTokenValid("/login/admin", "admin");
+	const { role, eventId } = useEnsureTokenValid<{
+		role?: number;
+		eventId?: number;
+	}>("/login/admin", "role");
 
 	const {
 		isLoading: eventsIsLoading,
 		error: errorEvents,
 		data: eventsDataRes,
 	} = useQuery({
-		queryKey: ["events"],
+		queryKey: ["events", role, eventId],
 		queryFn: async () => {
-			const { data, error, status } = await getEvents();
+			console.log("role", role);
+			console.log("eventId", eventId);
+			if (role == 0) {
+				const { data, error, status } = await getEvents();
+
+				if (data) {
+					return data;
+				}
+
+				if (status == 401) {
+					localStorage.removeItem("token");
+					navigate({ to: "/login/admin", replace: true });
+				}
+
+				throw new Error(error);
+			}
+
+			if (!eventId) {
+				throw new Error("Event ID not found");
+			}
+
+			const { data, error, status } = await getEvent(eventId);
 
 			if (data) {
 				return data;
@@ -66,13 +90,18 @@ function DashboardAdminIndex() {
 
 	useEffect(() => {
 		if (eventsDataRes) {
-			setEvents(eventsDataRes);
+			if (role == 0 && Array.isArray(eventsDataRes)) {
+				setEvents(eventsDataRes);
 
-			if (eventsDataRes.length > 0) {
-				setActiveEvent(eventsDataRes[0]);
+				if (eventsDataRes.length > 0) {
+					setActiveEvent(eventsDataRes[0]);
+				}
+				return;
 			}
+
+			setActiveEvent(eventsDataRes as Event);
 		}
-	}, [eventsDataRes]);
+	}, [role, eventsDataRes]);
 
 	const handleEventActionBtn = (key: string | number) => {
 		let deleteRes: APIResponse<boolean>;
@@ -137,7 +166,7 @@ function DashboardAdminIndex() {
 		return (
 			<div className={styles["admin"]}>
 				<p className="text-danger" dir="rtl">
-					שגיאה בטעינת האירועים: {errorEvents.message}
+					שגיאה בטעינה: {errorEvents.message}
 				</p>
 			</div>
 		);
@@ -146,14 +175,16 @@ function DashboardAdminIndex() {
 	return (
 		<ActiveEventContext.Provider value={{ activeEvent, setActiveEvent }}>
 			<div className={styles["admin"]}>
-				<NoEvents
-					shouldRender={events.length == 0 ? true : false}
-					handleNewEventBtn={() => {
-						openEventModal(ModalType.NEW);
-					}}
-				/>
+				{role == 0 && (
+					<NoEvents
+						shouldRender={events.length == 0 ? true : false}
+						handleNewEventBtn={() => {
+							openEventModal(ModalType.NEW);
+						}}
+					/>
+				)}
 
-				{events.length > 0 ? (
+				{role == 0 && events.length > 0 ? (
 					<div className={styles["select-event"]}>
 						<SelectEvent events={events} />
 
@@ -161,25 +192,34 @@ function DashboardAdminIndex() {
 					</div>
 				) : null}
 
-				<AdminTabs />
+				{role != 0 && (
+					<div className={styles["event-name"]}>
+						<h1>{activeEvent?.name}</h1>
+					</div>
+				)}
 
-				<EditOrAddEventModal
-					isOpen={isEventModalOpen}
-					onClose={() => {
-						setIsEventModalOpen(false);
-					}}
-					modalType={eventModalType}
-					event={activeEvent}
-					onEventAdded={(event: Event) => {
-						events.push(event);
-						// setSelectedEventId(event.id + "");
-						setActiveEvent(event);
-					}}
-					onEventEdited={(event: Event) => {
-						const index = events.findIndex((e) => e.id == event.id);
-						events[index] = event;
-					}}
-				/>
+				<AdminTabs showAdminsTab={role == 0} />
+
+				{role == 0 && (
+					<EditOrAddEventModal
+						isOpen={isEventModalOpen}
+						onClose={() => {
+							setIsEventModalOpen(false);
+						}}
+						modalType={eventModalType}
+						event={activeEvent}
+						onEventAdded={(event: Event) => {
+							events.push(event);
+							setActiveEvent(event);
+						}}
+						onEventEdited={(event: Event) => {
+							const index = events.findIndex(
+								(e) => e.id == event.id
+							);
+							events[index] = event;
+						}}
+					/>
+				)}
 			</div>
 		</ActiveEventContext.Provider>
 	);

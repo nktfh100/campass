@@ -4,11 +4,10 @@ import EditOrAddGuestModal from "@/components/shared/EditOrAddGuestModal/EditOrA
 import GuestCards from "@/components/shared/GuestCards/GuestCards";
 import GuestModal from "@/components/shared/GuestModal/GuestModal";
 import GuestsContext from "@/contexts/GuestsContext";
+import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";
 import { getGuests } from "@/lib/api/guests";
 import { getUser } from "@/lib/api/users";
 import { Guest, ModalType } from "@/lib/types";
-import useEnsureTokenValid from "@/stores/useEnsureTokenValid";
-import useUserStore from "@/stores/useUserStore";
 import { Button } from "@nextui-org/button";
 import { Spinner } from "@nextui-org/spinner";
 import { useQuery } from "@tanstack/react-query";
@@ -22,9 +21,6 @@ export const Route = createLazyFileRoute("/dashboard/user")({
 
 function DashboardUserIndex() {
 	const navigate = useNavigate();
-	const userId = useUserStore((state) => state.id);
-	const eventName = useUserStore((state) => state.eventName);
-	const invitationCount = useUserStore((state) => state.eventInvitationCount);
 
 	const [guests, setGuests] = useState<Guest[]>([]);
 
@@ -35,25 +31,18 @@ function DashboardUserIndex() {
 	// Guest info modal
 	const [infoGuestModal, setInfoGuestModal] = useState<Guest | null>(null);
 
-	useEnsureTokenValid("/login/user", "id");
+	const { id } = useEnsureTokenValid("/login/user", "id");
 
-	const { isLoading: userDataLoading, error: userDataResError } = useQuery({
+	const {
+		isLoading: userDataLoading,
+		error: userDataResError,
+		data: userData,
+	} = useQuery({
 		queryKey: ["userData"],
 		queryFn: async () => {
 			const { data, error, status } = await getUser("me");
 
 			if (data) {
-				useUserStore.setState({
-					id: data.id,
-					eventId: data.event_id,
-					idNumber: data.id_number,
-					fullName: data.full_name,
-					eventName: data.event_name,
-					eventDescription: data.event_description,
-					eventWelcomeText: data.event_welcome_text,
-					eventInvitationCount: data.event_invitation_count,
-				});
-
 				return data;
 			}
 
@@ -71,9 +60,9 @@ function DashboardUserIndex() {
 		error: guestsResError,
 		data: guestsResData,
 	} = useQuery({
-		queryKey: ["guests", userId],
+		queryKey: ["guests", id],
 		queryFn: async () => {
-			if (!userId) {
+			if (!id) {
 				throw new Error("User ID not found");
 			}
 
@@ -117,15 +106,18 @@ function DashboardUserIndex() {
 	return (
 		<GuestsContext.Provider value={{ guests, setGuests }}>
 			<div className={styles["user"]} dir="rtl">
-				<h1>{eventName}</h1>
+				<h1>{userData?.event_name}</h1>
 				<h2>הזמנת אורחים</h2>
 				<p>
-					מספר האורחים שלך: {guests.length}/{invitationCount || 0}
+					מספר האורחים שלך: {guests.length}/
+					{userData?.event_invitation_count || 0}
 				</p>
 
 				<Button
 					color="primary"
-					disabled={guests.length >= (invitationCount || 0)}
+					disabled={
+						guests.length >= (userData?.event_invitation_count || 0)
+					}
 					onPress={() => {
 						setModalGuest(null);
 						setIsGuestModalOpen(true);
@@ -136,7 +128,7 @@ function DashboardUserIndex() {
 
 				<GuestCards
 					isLoading={guestsLoading}
-					eventName={eventName || ""}
+					eventName={userData?.event_name || ""}
 					onGuestCardClick={(guest: Guest) => {
 						setInfoGuestModal(guest);
 					}}
@@ -144,7 +136,7 @@ function DashboardUserIndex() {
 				/>
 
 				<GuestModal
-					eventName={eventName}
+					eventName={userData?.event_name || ""}
 					guest={infoGuestModal}
 					isOpen={infoGuestModal != null}
 					onClose={() => setInfoGuestModal(null)}
@@ -160,7 +152,7 @@ function DashboardUserIndex() {
 
 				<EditOrAddGuestModal
 					modalType={modalGuest ? ModalType.EDIT : ModalType.NEW}
-					eventName={eventName || ""}
+					eventName={userData?.event_name || "" || ""}
 					isOpen={isGuestModalOpen}
 					onClose={() => setIsGuestModalOpen(false)}
 					guest={modalGuest}

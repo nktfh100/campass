@@ -5,6 +5,7 @@ import { Type } from "@sinclair/typebox";
 
 const adminSchema: FastifySchema = {
 	body: Type.Object({
+		username: Type.String(),
 		password: Type.String(),
 	}),
 	response: {
@@ -21,13 +22,11 @@ const userSchema: FastifySchema = {
 	response: {
 		200: Type.Object({
 			token: Type.String(),
-			userId: Type.Number(),
 		}),
 	},
 };
 
 const authRoutes: FastifyPluginCallback = (fastify, options, done) => {
-	// Authenticate admin with a password
 	fastify.route({
 		method: "POST",
 		url: "/admin",
@@ -35,7 +34,6 @@ const authRoutes: FastifyPluginCallback = (fastify, options, done) => {
 		schema: adminSchema,
 	});
 
-	// Authenticate user with id number
 	fastify.route({
 		method: "POST",
 		url: "/user",

@@ -147,7 +147,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							variant="bordered"
 							isRequired
 							value={name}
-							onChange={(e) => setName(e.target.value)}
+							onValueChange={(value) => setName(value)}
 							disabled={isSubmitting}
 						/>
 
@@ -158,8 +158,8 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							variant="bordered"
 							isRequired
 							value={invitationCount as any}
-							onChange={(e) =>
-								setInvitationCount(e.target.value as any)
+							onValueChange={(value) =>
+								setInvitationCount(value as any)
 							}
 							isInvalid={!!invitationCountError}
 							errorMessage={invitationCountError}

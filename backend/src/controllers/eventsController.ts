@@ -1,5 +1,6 @@
 import { RouteHandlerMethod } from "fastify";
 
+import { AdminRole } from "@/lib/types";
 import { Static, Type } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
@@ -35,6 +36,14 @@ export const getEvent: RouteHandlerMethod = async (request, reply) => {
 	const { id } = request.params as { id: string };
 	const event = await knex("events").select("*").where("id", id).first();
 
+	if (
+		request.adminData!.role != AdminRole.SuperAdmin &&
+		id != request.adminData!.eventId + ""
+	) {
+		reply.status(403);
+		return;
+	}
+
 	if (!event) {
 		reply.status(404);
 		return;
@@ -43,13 +52,21 @@ export const getEvent: RouteHandlerMethod = async (request, reply) => {
 	return { event };
 };
 
-export const updateEvent: RouteHandlerMethod = async (request) => {
+export const updateEvent: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
 	const { id } = request.params as { id: string };
 	const newEventData = Value.Clean(
 		eventType,
 		request.body
 	) as newEventBodyType;
+
+	if (
+		request.adminData?.role != AdminRole.SuperAdmin &&
+		id != request.adminData?.eventId + ""
+	) {
+		reply.status(403);
+		return;
+	}
 
 	const [event] = await knex("events")
 		.update(newEventData)
@@ -63,6 +80,9 @@ export const deleteEvent: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
 	const { id } = request.params as { id: string };
 	await knex("events").delete().where("id", id);
+
+	// Delete all admins for this event
+	await knex("admins").delete().where("event_id", id);
 
 	// Delete all guests for this event
 	await knex("guests").delete().where("event_id", id);

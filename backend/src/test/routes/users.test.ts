@@ -3,7 +3,10 @@ import { FastifyInstance } from "fastify";
 import { NewUser, User } from "knex/types/tables";
 
 import buildFastify from "@/app";
-import { getTestAdminToken, getTestUserToken } from "@/utils/tests/getTokens";
+import {
+	getTestSuperAdminToken,
+	getTestUserToken,
+} from "@/utils/tests/getTokens";
 import setupTestDB from "@/utils/tests/setupTestDB";
 import { afterAll, beforeAll, describe, expect, test } from "@jest/globals";
 
@@ -20,7 +23,7 @@ describe("Users routes", () => {
 
 			await setupTestDB(fastify.knex);
 
-			adminToken = await getTestAdminToken(fastify);
+			adminToken = await getTestSuperAdminToken(fastify);
 			userToken = await getTestUserToken(fastify);
 		})();
 	});
@@ -71,7 +74,7 @@ describe("Users routes", () => {
 		expect(response.json()).toMatchObject({ user: defaultTestUser });
 	});
 
-	test("GET /users/:id by user should return 401 if trying to get someone else's data", async () => {
+	test("GET /users/:id by user should return 403 if trying to get someone else's data", async () => {
 		const response = await fastify.inject({
 			method: "GET",
 			url: `/users/2`,
@@ -80,7 +83,7 @@ describe("Users routes", () => {
 			},
 		});
 
-		expect(response.statusCode).toBe(401);
+		expect(response.statusCode).toBe(403);
 	});
 
 	test("GET /users/:id by user should return 404 if user doesn't exist", async () => {

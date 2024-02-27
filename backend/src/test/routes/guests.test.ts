@@ -4,7 +4,10 @@ import { Guest, NewGuest } from "knex/types/tables";
 
 import { defaultTestGuest } from "@/../seeds/test/testData";
 import buildFastify from "@/app";
-import { getTestAdminToken, getTestUserToken } from "@/utils/tests/getTokens";
+import {
+	getTestSuperAdminToken,
+	getTestUserToken,
+} from "@/utils/tests/getTokens";
 import setupTestDB from "@/utils/tests/setupTestDB";
 import { getRandomUUID } from "@/utils/utils";
 import { afterAll, beforeAll, describe, expect, test } from "@jest/globals";
@@ -20,7 +23,7 @@ describe("Guests routes", () => {
 
 			await setupTestDB(fastify.knex);
 
-			adminToken = await getTestAdminToken(fastify);
+			adminToken = await getTestSuperAdminToken(fastify);
 			userToken = await getTestUserToken(fastify);
 		})();
 	});
@@ -71,7 +74,7 @@ describe("Guests routes", () => {
 	test("GET /guests/:id as scanner should update guest entered_at", async () => {
 		const response = await fastify.inject({
 			method: "GET",
-			url: `/guests/${defaultTestGuest.uuid}?scanner=true`,
+			url: `/guests/${defaultTestGuest.uuid}?scan=true`,
 		});
 
 		expect(response.statusCode).toBe(200);

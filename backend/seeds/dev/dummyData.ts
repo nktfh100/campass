@@ -18,11 +18,21 @@ const events = [
 
 // Seed data for the dev environment
 export async function seed(knex: Knex): Promise<void> {
+	await knex("admins").truncate();
 	await knex("events").truncate();
 	await knex("users").truncate();
 	await knex("guests").truncate();
 
 	await knex("events").insert(events);
+
+	await knex("admins").insert({
+		id: 1,
+		event_id: 1,
+		username: "admin1",
+		// Password is "admin"
+		password:
+			"$2a$12$KnhMR829/FRXQwBi9./HueEh52UIn4ia2NMj2lmr.oRkIU0BRo1uG",
+	});
 
 	let users = [];
 

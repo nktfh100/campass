@@ -1,7 +1,6 @@
 export type Styles = {
-  admin: string;
-  "event-name": string;
-  "select-event": string;
+  cards: string;
+  container: string;
   spinner: string;
 };
 

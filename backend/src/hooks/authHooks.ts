@@ -1,21 +1,27 @@
 import { onRequestAsyncHookHandler } from "fastify";
 
+import { AdminRole, AdminTokenData, UserTokenData } from "@/lib/types";
 import { parseAuthHeader } from "@/utils/utils";
 
-export const verifyAdmin: onRequestAsyncHookHandler = async (request) => {
-	const token = parseAuthHeader(request.headers.authorization);
-	if (!token) {
-		throw new Error("No token provided");
-	}
+export const verifyAdmin: (role: AdminRole) => onRequestAsyncHookHandler = (
+	role
+) => {
+	return async (request) => {
+		const token = parseAuthHeader(request.headers.authorization);
+		if (!token) {
+			throw new Error("No token provided");
+		}
 
-	const tokenData = request.fastify.jwt.verify<{ admin: boolean }>(token);
-	if (!tokenData.admin) {
-		throw new Error("Unauthorized!");
-	}
+		const tokenData = request.fastify.jwt.verify<AdminTokenData>(token);
 
-	request.admin = true;
+		if (!tokenData.id || tokenData.role > role) {
+			throw new Error("Unauthorized!");
+		}
 
-	return;
+		request.adminData = tokenData;
+
+		return;
+	};
 };
 
 export const verifyUser: onRequestAsyncHookHandler = async (request) => {
@@ -24,7 +30,7 @@ export const verifyUser: onRequestAsyncHookHandler = async (request) => {
 		throw new Error("No token provided");
 	}
 
-	const tokenData = request.fastify.jwt.verify<{ id: string }>(token);
+	const tokenData = request.fastify.jwt.verify<UserTokenData>(token);
 	if (!tokenData.id) {
 		throw new Error("Invalid token");
 	}
@@ -41,7 +47,7 @@ export const verifyUser: onRequestAsyncHookHandler = async (request) => {
 	}
 
 	request.userData = {
-		id: userData.id,
+		id: tokenData.id,
 	};
 
 	return;
