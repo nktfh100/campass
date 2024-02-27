@@ -147,7 +147,7 @@ export default function UserModal({
 								שגיאה: {error.message}
 							</p>
 						)}
-						{userGuests && (
+						{userGuests.length > 0 && (
 							<div dir="rtl">
 								<h3>אורחים:</h3>
 								<GuestCards
