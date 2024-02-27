@@ -127,19 +127,25 @@ function DashboardAdminIndex() {
 						}
 
 						if (deleteRes.data) {
-							setEvents((prev) =>
-								prev.filter((e) => e.id != activeEvent.id)
-							);
+							setEvents((prev) => {
+								const newEvents = prev.filter(
+									(e) => e.id != activeEvent.id
+								);
+
+								if (newEvents.length > 0) {
+									setActiveEvent(newEvents[0]);
+								} else {
+									setActiveEvent(null);
+								}
+
+								return newEvents;
+							});
 
 							openGlobalModal({
 								modalType: MessageModalType.Success,
 								title: "האירוע נמחק בהצלחה",
 								bodyText: `האירוע ${activeEvent.name} נמחק בהצלחה`,
 							});
-
-							if (events.length > 1) {
-								setActiveEvent(events[1]);
-							}
 						} else if (deleteRes.error) {
 							openGlobalModal({
 								modalType: MessageModalType.Error,

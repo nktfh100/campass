@@ -97,6 +97,7 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 
 	// Only return the user's guests
 	if (request.userData) {
+		console.log("request.userData", request.userData);
 		const guests = await knex("guests")
 			.select("*")
 			.where("user_id", request.userData.id)
@@ -105,6 +106,7 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 		return { guests };
 	}
 
+	console.log("request.adminData", request.adminData);
 	if (request.adminData) {
 		const { page, limit, event_id, user_id } = request.query as {
 			page: number;
@@ -112,6 +114,9 @@ export const getGuests: RouteHandlerMethod = async (request, reply) => {
 			event_id?: number;
 			user_id?: number;
 		};
+
+		console.log("event_id", event_id);
+		console.log("user_id", user_id);
 
 		const offset = (page - 1) * limit;
 
@@ -284,7 +289,6 @@ export const deleteGuest: RouteHandlerMethod = async (request, reply) => {
 	return;
 };
 
-// Export all guests for the event using excel4node
 export const exportGuestsExcel: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
 	const { event_id } = request.query as { event_id: number };

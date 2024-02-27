@@ -30,9 +30,16 @@ export const verifyUser: onRequestAsyncHookHandler = async (request) => {
 		throw new Error("No token provided");
 	}
 
-	const tokenData = request.fastify.jwt.verify<UserTokenData>(token);
+	const tokenData = request.fastify.jwt.verify<
+		UserTokenData & AdminTokenData
+	>(token);
 	if (!tokenData.id) {
 		throw new Error("Invalid token");
+	}
+
+	// Token is for an admin
+	if (tokenData.role) {
+		throw new Error("Unauthorized!");
 	}
 
 	// Make sure the user exists
