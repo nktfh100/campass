@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 
-import ActiveEventContext from "@/contexts/ActiveEventContext";
-import { Tab, Tabs } from "@nextui-org/tabs";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import ActiveEventContext from '@/contexts/ActiveEventContext';
+import { Tab, Tabs } from '@nextui-org/tabs';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
-import styles from "./AdminTabs.module.scss";
-import EventAdminsTab from "./EventAdminsTabs";
-import GuestsTab from "./GuestsTab";
-import UsersTab from "./UsersTab";
+import styles from './AdminTabs.module.scss';
+import EventAdminsTab from './EventAdminsTabs';
+import GuestsTab from './GuestsTab';
+import UsersTab from './UsersTab';
 
 export default function AdminTabs({
 	showAdminsTab = true,
@@ -45,7 +45,7 @@ export default function AdminTabs({
 					<EventAdminsTab event={activeEvent} />
 				</Tab>
 			)}
-			<Tab key="users" title="משתמשים" className={styles["tab"]}>
+			<Tab key="users" title="מזמינים" className={styles["tab"]}>
 				<UsersTab event={activeEvent} />
 			</Tab>
 			<Tab key="guests" title="אורחים" className={styles["tab"]}>

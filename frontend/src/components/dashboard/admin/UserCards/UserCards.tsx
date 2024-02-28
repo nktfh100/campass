@@ -1,12 +1,12 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 
-import UsersContext from "@/contexts/UsersContext";
-import { User } from "@/lib/types";
-import { Pagination } from "@nextui-org/pagination";
-import { Spinner } from "@nextui-org/spinner";
+import UsersContext from '@/contexts/UsersContext';
+import { User } from '@/lib/types';
+import { Pagination } from '@nextui-org/pagination';
+import { Spinner } from '@nextui-org/spinner';
 
-import UserCard from "./UserCard";
-import styles from "./UserCards.module.scss";
+import UserCard from './UserCard';
+import styles from './UserCards.module.scss';
 
 export default function UserCards({
 	isLoading,
@@ -28,7 +28,7 @@ export default function UserCards({
 
 	return (
 		<div className={styles["container"]}>
-			{users && <p>סהכ משתמשים: {usersCount}</p>}
+			{users && <p>סהכ מזמינים: {usersCount}</p>}
 			<Pagination
 				total={pageCount}
 				page={currentPage}

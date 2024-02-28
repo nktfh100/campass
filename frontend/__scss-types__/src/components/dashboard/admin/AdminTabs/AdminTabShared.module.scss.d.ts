@@ -1,4 +1,5 @@
 export type Styles = {
+  "tab__top-buttons": string;
   "tab-content": string;
 };
 

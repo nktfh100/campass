@@ -67,8 +67,8 @@ export default function UserModal({
 
 		openYesNoGlobalModal({
 			modalType: MessageModalType.YesNoDanger,
-			title: "מחיקת משתמש",
-			bodyText: `האם אתה בטוח שברצונך למחוק את המשתמש ${user.full_name}?`,
+			title: "מחיקת מזמין",
+			bodyText: `האם אתה בטוח שברצונך למחוק את המזמין ${user.full_name}?`,
 			yesBtnText: "מחק",
 			btnCallback: async () => {
 				if (!user) {
@@ -87,14 +87,14 @@ export default function UserModal({
 
 					openGlobalModal({
 						modalType: MessageModalType.Success,
-						title: "המשתמש נמחק בהצלחה",
-						bodyText: `המשתמש ${user.full_name} נמחק בהצלחה`,
+						title: "המזמין נמחק בהצלחה",
+						bodyText: `המזמין ${user.full_name} נמחק בהצלחה`,
 					});
 				} else if (userDeleteRes.error) {
 					openGlobalModal({
 						modalType: MessageModalType.Error,
 						title: "שגיאה",
-						bodyText: `המשתמש לא נמחק`,
+						bodyText: `המזמין לא נמחק`,
 					});
 				}
 
@@ -122,7 +122,7 @@ export default function UserModal({
 						<p className={styles["modal-header__title"]} dir="rtl">
 							{eventName}
 						</p>
-						<p>משתמש</p>
+						<p>מזמין</p>
 					</ModalHeader>
 					<ModalBody>
 						<div>

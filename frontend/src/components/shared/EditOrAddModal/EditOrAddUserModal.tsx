@@ -1,21 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 
-import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
-import UsersContext from "@/contexts/UsersContext";
-import { createUser, editUser } from "@/lib/api/users";
-import { APIResponse, ModalType, User } from "@/lib/types";
-import { openGlobalModal } from "@/stores/useGlobalModalStore";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
-import {
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@nextui-org/modal";
+import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
+import UsersContext from '@/contexts/UsersContext';
+import { createUser, editUser } from '@/lib/api/users';
+import { APIResponse, ModalType, User } from '@/lib/types';
+import { openGlobalModal } from '@/stores/useGlobalModalStore';
+import { Button } from '@nextui-org/button';
+import { Input } from '@nextui-org/input';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 
-import stylesShared from "./sharedEditAddModal.module.scss";
+import stylesShared from './sharedEditAddModal.module.scss';
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -129,8 +123,8 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 			if (modalType == ModalType.NEW) {
 				openGlobalModal({
 					modalType: MessageModalType.Success,
-					title: "משתמש נוצר בהצלחה",
-					bodyText: `המשתמש ${res.data.full_name} נוצר בהצלחה`,
+					title: "מזמין נוצר בהצלחה",
+					bodyText: `המזמיחן ${res.data.full_name} נוצר בהצלחה`,
 				});
 			}
 		}
@@ -151,8 +145,8 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 					<ModalHeader className={stylesShared["modal__header"]}>
 						<p>
 							{modalType == ModalType.EDIT
-								? "עריכת משתמש"
-								: "הוספת משתמש"}
+								? "עריכת מזמין"
+								: "הוספת מזמין"}
 						</p>
 						<p>{eventName}</p>
 					</ModalHeader>

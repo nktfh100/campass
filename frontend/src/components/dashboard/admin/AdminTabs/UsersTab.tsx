@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import UserCards from "@/components/dashboard/admin/UserCards/UserCards";
-import UserModal from "@/components/dashboard/admin/UserModal/UserModal";
-import EditOrAddUserModal from "@/components/shared/EditOrAddModal/EditOrAddUserModal";
-import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
-import UsersContext from "@/contexts/UsersContext";
-import { uploadUsersExcel } from "@/lib/api/excel";
-import { getUsers } from "@/lib/api/users";
-import { ApiPagination, Event, ModalType, User } from "@/lib/types";
-import { openGlobalModal } from "@/stores/useGlobalModalStore";
-import { Button } from "@nextui-org/button";
-import { useQuery } from "@tanstack/react-query";
+import UserCards from '@/components/dashboard/admin/UserCards/UserCards';
+import UserModal from '@/components/dashboard/admin/UserModal/UserModal';
+import EditOrAddUserModal from '@/components/shared/EditOrAddModal/EditOrAddUserModal';
+import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
+import UsersContext from '@/contexts/UsersContext';
+import { uploadUsersExcel } from '@/lib/api/excel';
+import { getUsers } from '@/lib/api/users';
+import { ApiPagination, Event, ModalType, User } from '@/lib/types';
+import { openGlobalModal } from '@/stores/useGlobalModalStore';
+import { Button } from '@nextui-org/button';
+import { useQuery } from '@tanstack/react-query';
 
-import stylesShared from "./AdminTabShared.module.scss";
+import stylesShared from './AdminTabShared.module.scss';
 
 export default function UsersTab({ event }: { event: Event }) {
 	const [users, setUsers] = useState<User[]>([]);
@@ -96,7 +96,7 @@ export default function UsersTab({ event }: { event: Event }) {
 			openGlobalModal({
 				modalType: MessageModalType.Success,
 				title: "ייבוא מאקסל",
-				bodyText: "המשתמשים יובאו בהצלחה",
+				bodyText: "המזמינים יובאו בהצלחה",
 				afterClosedCallback: () => {
 					refreshUsers();
 				},
@@ -107,20 +107,21 @@ export default function UsersTab({ event }: { event: Event }) {
 	return (
 		<UsersContext.Provider value={{ users, setUsers }}>
 			<div className={`fade-in ${stylesShared["tab-content"]}`}>
-				<Button onPress={handleExcelImportBtn}>ייבוא מאקסל</Button>
-
-				<Button
-					onPress={() => {
-						setModalEditUser(null);
-						setIsModalOpen(true);
-					}}
-				>
-					הוסף משתמש
-				</Button>
+				<div className={stylesShared["tab__top-buttons"]}>
+					<Button onPress={handleExcelImportBtn}>ייבוא מאקסל</Button>
+					<Button
+						onPress={() => {
+							setModalEditUser(null);
+							setIsModalOpen(true);
+						}}
+					>
+						הוסף מזמין
+					</Button>
+				</div>
 
 				{usersError && (
 					<p className="text-danger" dir="rtl">
-						שגיאה בטעינת המשתמשים: {usersError.message}
+						שגיאה בטעינת המזמינים: {usersError.message}
 					</p>
 				)}
 
