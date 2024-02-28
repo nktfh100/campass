@@ -8,6 +8,7 @@ import UsersContext from '@/contexts/UsersContext';
 import { uploadUsersExcel } from '@/lib/api/excel';
 import { getUsers } from '@/lib/api/users';
 import { ApiPagination, Event, ModalType, User } from '@/lib/types';
+import { scrollToTop } from '@/lib/utils';
 import { openGlobalModal } from '@/stores/useGlobalModalStore';
 import { Button } from '@nextui-org/button';
 import { useQuery } from '@tanstack/react-query';
@@ -38,6 +39,7 @@ export default function UsersTab({ event }: { event: Event }) {
 
 	useEffect(() => {
 		setCurrentPage(1);
+		scrollToTop();
 	}, [event.id]);
 
 	const {
@@ -130,7 +132,10 @@ export default function UsersTab({ event }: { event: Event }) {
 					isLoading={usersIsLoading}
 					pageCount={paginationData?.pageCount || 1}
 					currentPage={currentPage}
-					onPageChange={(page: number) => setCurrentPage(page)}
+					onPageChange={(page: number) => {
+						setCurrentPage(page);
+						scrollToTop();
+					}}
 					onUserClick={(user: User) => setInfoModalUser(user)}
 					usersCount={paginationData?.totalCount || 0}
 				/>

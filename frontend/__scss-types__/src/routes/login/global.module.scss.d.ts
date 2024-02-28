@@ -1,9 +1,9 @@
 export type Styles = {
-  app: string;
-  "background-color": string;
-  "fade-in": string;
-  fadeIn: string;
-  light: string;
+  form: string;
+  form__error: string;
+  form__inputs: string;
+  form__password: string;
+  form__username: string;
 };
 
 export type ClassNames = keyof Styles;

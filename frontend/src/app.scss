@@ -8,9 +8,12 @@
 	padding: 0;
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
-	font-family: "Rubik";
-	font-display: optional;
+	font-family: "Rubik", sans-serif;
 }
 
 html,
@@ -24,6 +27,23 @@ body,
 	display: flex;
 	flex-direction: column;
 	flex: 1;
+}
+
+#app {
+	background-image: url("/wave.svg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	max-width: 100vw;
+}
+.background-color {
+	background-color: hsl(var(--nextui-primary));
+	width: 100%;
+	max-width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
 }
 
 button[disabled] {

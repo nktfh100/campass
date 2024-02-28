@@ -17,3 +17,7 @@ export function parseJwtToken(token: string): { [key: string]: string } {
 		return {};
 	}
 }
+
+export function scrollToTop() {
+	window.scrollTo(0, 0);
+}

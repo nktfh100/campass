@@ -21,6 +21,7 @@ const IndexLazyImport = createFileRoute('/')()
 const TicketGuestIdLazyImport = createFileRoute('/ticket/$guestId')()
 const LoginUserLazyImport = createFileRoute('/login/user')()
 const LoginGuestLazyImport = createFileRoute('/login/guest')()
+const LoginGlobalLazyImport = createFileRoute('/login/global')()
 const LoginAdminLazyImport = createFileRoute('/login/admin')()
 const DashboardUserLazyImport = createFileRoute('/dashboard/user')()
 const DashboardAdminLazyImport = createFileRoute('/dashboard/admin')()
@@ -53,6 +54,11 @@ const LoginGuestLazyRoute = LoginGuestLazyImport.update({
   path: '/login/guest',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login/guest.lazy').then((d) => d.Route))
+
+const LoginGlobalLazyRoute = LoginGlobalLazyImport.update({
+  path: '/login/global',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/login/global.lazy').then((d) => d.Route))
 
 const LoginAdminLazyRoute = LoginAdminLazyImport.update({
   path: '/login/admin',
@@ -97,6 +103,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginAdminLazyImport
       parentRoute: typeof rootRoute
     }
+    '/login/global': {
+      preLoaderRoute: typeof LoginGlobalLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/login/guest': {
       preLoaderRoute: typeof LoginGuestLazyImport
       parentRoute: typeof rootRoute
@@ -120,6 +130,7 @@ export const routeTree = rootRoute.addChildren([
   DashboardAdminLazyRoute,
   DashboardUserLazyRoute,
   LoginAdminLazyRoute,
+  LoginGlobalLazyRoute,
   LoginGuestLazyRoute,
   LoginUserLazyRoute,
   TicketGuestIdLazyRoute,
