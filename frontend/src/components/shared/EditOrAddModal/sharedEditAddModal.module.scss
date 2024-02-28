@@ -18,3 +18,14 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.modal__weapon-form {
+	color: hsl(var(--nextui-danger));
+	a {
+		font-size: 0.9rem;
+		padding: 0;
+		padding-top: 0.3rem;
+		// Disable line break
+		white-space: normal;
+	}
+}

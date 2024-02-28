@@ -1,20 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
-import { createEvent, editEvent } from "@/lib/api/events";
-import { APIResponse, Event, ModalType } from "@/lib/types";
-import { openGlobalModal } from "@/stores/useGlobalModalStore";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
-import {
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@nextui-org/modal";
+import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
+import { createEvent, editEvent } from '@/lib/api/events';
+import { APIResponse, Event, ModalType } from '@/lib/types';
+import { openGlobalModal } from '@/stores/useGlobalModalStore';
+import { Button } from '@nextui-org/button';
+import { Input } from '@nextui-org/input';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 
-import stylesShared from "./sharedEditAddModal.module.scss";
+import stylesShared from './sharedEditAddModal.module.scss';
 
 type BaseModalProps = {
 	modalType: ModalType;
@@ -43,6 +37,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 
 	const [name, setName] = useState("");
 	const [invitationCount, setInvitationCount] = useState(0);
+	const [weaponForm, setWeaponForm] = useState("");
 
 	const [invitationCountError, setInvitationCountError] = useState("");
 
@@ -54,6 +49,9 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 		if (event && isOpen && modalType == ModalType.EDIT) {
 			setName(event.name);
 			setInvitationCount(event.invitation_count);
+			if (event.weapon_form) {
+				setWeaponForm(event.weapon_form);
+			}
 		}
 	}, [event, isOpen, modalType]);
 
@@ -61,6 +59,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 		if (!open) {
 			setName("");
 			setInvitationCount(0);
+			setWeaponForm("");
 			setError("");
 			setInvitationCountError("");
 			setIsSubmitting(false);
@@ -90,9 +89,10 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 				eventId: event!.id,
 				name,
 				invitationCount,
+				weaponForm,
 			});
 		} else {
-			res = await createEvent({ name, invitationCount });
+			res = await createEvent({ name, invitationCount, weaponForm });
 		}
 
 		setIsSubmitting(false);
@@ -163,6 +163,14 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 							}
 							isInvalid={!!invitationCountError}
 							errorMessage={invitationCountError}
+							isDisabled={isSubmitting}
+						/>
+						<Input
+							label="קישור לטופס נשק"
+							placeholder="קישור לטופס נשק"
+							variant="bordered"
+							value={weaponForm}
+							onValueChange={(value) => setWeaponForm(value)}
 							isDisabled={isSubmitting}
 						/>
 					</ModalBody>

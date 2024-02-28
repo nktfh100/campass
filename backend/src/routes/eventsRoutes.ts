@@ -1,25 +1,23 @@
-import { FastifyPluginCallback, FastifySchema } from "fastify";
+import { FastifyPluginCallback, FastifySchema } from 'fastify';
 
 import {
-	createEvent,
-	deleteEvent,
-	getEvent,
-	getEvents,
-	updateEvent,
-} from "@/controllers/eventsController";
-import { AdminRole } from "@/lib/types";
-import { Type } from "@sinclair/typebox";
+    createEvent, deleteEvent, getEvent, getEvents, updateEvent
+} from '@/controllers/eventsController';
+import { AdminRole } from '@/lib/types';
+import { Type } from '@sinclair/typebox';
 
 const eventType = Type.Object({
 	id: Type.Number(),
 	name: Type.String(),
 	invitation_count: Type.Number(),
+	weapon_form: Type.Optional(Type.String({ nullable: true })),
 });
 
 const createEventSchema: FastifySchema = {
 	body: Type.Object({
 		name: Type.String(),
 		invitation_count: Type.Number(),
+		weapon_form: Type.Optional(Type.String({ nullable: true })),
 	}),
 	response: {
 		200: Type.Object({
@@ -49,6 +47,7 @@ const updateEventSchema: FastifySchema = {
 		Type.Object({
 			name: Type.String(),
 			invitation_count: Type.Number(),
+			weapon_form: Type.String({ nullable: true }),
 		})
 	),
 	response: {

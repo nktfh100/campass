@@ -1,9 +1,9 @@
-import { onRequestAsyncHookHandler, preHandlerAsyncHookHandler } from "fastify";
-import { Knex } from "knex";
+import { onRequestAsyncHookHandler, preHandlerAsyncHookHandler } from 'fastify';
+import { Knex } from 'knex';
 
-import FastifyJwtNamespace from "@fastify/jwt";
+import FastifyJwtNamespace from '@fastify/jwt';
 
-import { AdminRole, AdminTokenData, UserTokenData } from "./types";
+import { AdminRole, AdminTokenData, UserTokenData } from './types';
 
 declare module "fastify" {
 	interface FastifyInstance
@@ -36,6 +36,7 @@ declare module "knex/types/tables" {
 		id: number;
 		name: string;
 		invitation_count: number;
+		weapon_form?: string;
 		created_at: Date;
 	}
 

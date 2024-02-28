@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
-import GuestCards from "@/components/shared/GuestCards/GuestCards";
-import GuestsContext from "@/contexts/GuestsContext";
-import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";
-import { getGuests } from "@/lib/api/guests";
-import { getUser } from "@/lib/api/users";
-import { Guest, ModalType } from "@/lib/types";
-import { Button } from "@nextui-org/button";
-import { Spinner } from "@nextui-org/spinner";
-import { useQuery } from "@tanstack/react-query";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import EditOrAddGuestModal from '@/components/shared/EditOrAddModal/EditOrAddGuestModal';
+import GuestCards from '@/components/shared/GuestCards/GuestCards';
+import GuestsContext from '@/contexts/GuestsContext';
+import useEnsureTokenValid from '@/hooks/useEnsureTokenValid';
+import { getGuests } from '@/lib/api/guests';
+import { getUser } from '@/lib/api/users';
+import { Guest, ModalType } from '@/lib/types';
+import { Button } from '@nextui-org/button';
+import { Spinner } from '@nextui-org/spinner';
+import { useQuery } from '@tanstack/react-query';
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 
-import styles from "./user.module.scss";
+import styles from './user.module.scss';
 
 export const Route = createLazyFileRoute("/dashboard/user")({
 	component: DashboardUserIndex,
@@ -130,6 +130,7 @@ function DashboardUserIndex() {
 				<EditOrAddGuestModal
 					modalType={modalGuest ? ModalType.EDIT : ModalType.NEW}
 					eventName={userData?.event_name || "" || ""}
+					weaponForm={userData?.event_weapon_form}
 					isOpen={isGuestModalOpen}
 					onClose={() => setIsGuestModalOpen(false)}
 					guest={modalGuest}

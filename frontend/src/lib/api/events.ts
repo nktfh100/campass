@@ -1,17 +1,20 @@
-import apiClient from "@/lib/api/api";
-import { APIResponse, Event } from "@/lib/types";
+import apiClient from '@/lib/api/api';
+import { APIResponse, Event } from '@/lib/types';
 
 export async function createEvent({
 	name,
 	invitationCount,
+	weaponForm,
 }: {
 	name: string;
 	invitationCount: number;
+	weaponForm?: string;
 }): Promise<APIResponse<Event>> {
 	try {
 		const res = await apiClient.post("/events", {
 			name,
 			invitation_count: invitationCount,
+			...(weaponForm ? { weapon_form: weaponForm } : {}),
 		});
 
 		const status = res.status;
@@ -35,15 +38,18 @@ export async function editEvent({
 	eventId,
 	name,
 	invitationCount,
+	weaponForm,
 }: {
 	eventId: number | string;
 	name: string;
 	invitationCount: number;
+	weaponForm?: string;
 }): Promise<APIResponse<Event>> {
 	try {
 		const res = await apiClient.patch(`/events/${eventId}`, {
 			name,
 			invitation_count: invitationCount,
+			...(weaponForm ? { weapon_form: weaponForm } : {}),
 		});
 
 		const status = res.status;

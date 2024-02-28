@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.increments("id").primary().unique().notNullable();
 		table.string("name").notNullable();
 		table.integer("invitation_count").defaultTo(3);
+		table.string("weapon_form").nullable();
 		table.timestamp("created_at").defaultTo(knex.fn.now());
 	});
 }

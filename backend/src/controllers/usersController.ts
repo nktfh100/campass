@@ -1,10 +1,10 @@
-import { RouteHandlerMethod } from "fastify";
-import { NewUser } from "knex/types/tables";
-import xlsx from "node-xlsx";
+import { RouteHandlerMethod } from 'fastify';
+import { NewUser } from 'knex/types/tables';
+import xlsx from 'node-xlsx';
 
-import { AdminRole } from "@/lib/types";
-import { Static, Type } from "@sinclair/typebox";
-import { Value } from "@sinclair/typebox/value";
+import { AdminRole } from '@/lib/types';
+import { Static, Type } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
 
 const userType = Type.Object({
 	id_number: Type.String(),
@@ -76,7 +76,8 @@ export const getUser: RouteHandlerMethod = async (request, reply) => {
 		.select(
 			"users.*",
 			"events.name as event_name",
-			"events.invitation_count as event_invitation_count"
+			"events.invitation_count as event_invitation_count",
+			"events.weapon_form as event_weapon_form"
 		)
 		.leftJoin("events", "users.event_id", "events.id")
 		.where("users.id", id)

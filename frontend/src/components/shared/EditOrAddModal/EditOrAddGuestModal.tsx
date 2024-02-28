@@ -1,29 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
-import GuestsContext from "@/contexts/GuestsContext";
-import { createGuest, deleteGuest, editGuest } from "@/lib/api/guests";
-import { APIResponse, Guest, ModalType } from "@/lib/types";
-import {
-	openGlobalModal,
-	openYesNoGlobalModal,
-} from "@/stores/useGlobalModalStore";
-import { Button } from "@nextui-org/button";
-import { Checkbox } from "@nextui-org/checkbox";
-import { Input } from "@nextui-org/input";
-import {
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-} from "@nextui-org/modal";
+import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
+import GuestsContext from '@/contexts/GuestsContext';
+import { createGuest, deleteGuest, editGuest } from '@/lib/api/guests';
+import { APIResponse, Guest, ModalType } from '@/lib/types';
+import { openGlobalModal, openYesNoGlobalModal } from '@/stores/useGlobalModalStore';
+import { Button } from '@nextui-org/button';
+import { Checkbox } from '@nextui-org/checkbox';
+import { Input } from '@nextui-org/input';
+import { Link } from '@nextui-org/link';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
 
-import stylesShared from "./sharedEditAddModal.module.scss";
+import stylesShared from './sharedEditAddModal.module.scss';
 
 interface BaseModalProps {
 	modalType: ModalType;
 	eventName: string;
+	weaponForm?: string;
 	isOpen: boolean;
 	onClose: () => void;
 	isAdmin: boolean;
@@ -44,7 +37,8 @@ type EditOrAddGuestModalProps = BaseModalProps &
 	(NewGuestModalProps | EditGuestModalProps);
 
 export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
-	const { modalType, eventName, isOpen, onClose, isAdmin } = props;
+	const { modalType, eventName, weaponForm, isOpen, onClose, isAdmin } =
+		props;
 	const { userId } = props as NewGuestModalProps;
 	const { onGuestEdited, guest } = props as EditGuestModalProps;
 
@@ -190,6 +184,15 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 		});
 	};
 
+	const shortenedFormLink = useMemo(
+		() =>
+			weaponForm
+				? weaponForm.slice(0, 35) +
+					(weaponForm.length > 35 ? "..." : "")
+				: "",
+		[weaponForm]
+	);
+
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -240,6 +243,27 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 								נושא נשק אישי
 							</p>
 						</Checkbox>
+						{weapon && weaponForm && (
+							<span
+								className={stylesShared["modal__weapon-form"]}
+								dir="rtl"
+							>
+								<p>שים לב, אורחים עם נשק חייבים למלא טופס.</p>
+								<p>
+									אורח שלא מילא את הטופס לא יוכל להיכנס
+									לאירוע!
+								</p>
+								<Link
+									href={weaponForm}
+									color="danger"
+									isExternal
+									showAnchorIcon
+									dir="ltr"
+								>
+									{shortenedFormLink}
+								</Link>
+							</span>
+						)}
 					</ModalBody>
 					<ModalFooter className={stylesShared["modal__footer"]}>
 						{error && (

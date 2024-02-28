@@ -1,14 +1,14 @@
-import { RouteHandlerMethod } from "fastify";
+import { RouteHandlerMethod } from 'fastify';
 
-import { AdminRole } from "@/lib/types";
-import { Static, Type } from "@sinclair/typebox";
-import { Value } from "@sinclair/typebox/value";
+import { AdminRole } from '@/lib/types';
+import { Static, Type } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
 
 const eventType = Type.Object({
 	name: Type.String(),
 	description: Type.String(),
-	welcome_text: Type.String(),
 	invitation_count: Type.Number(),
+	weapon_form: Type.String({ nullable: true }),
 });
 
 type newEventBodyType = Static<typeof eventType>;
@@ -79,6 +79,7 @@ export const updateEvent: RouteHandlerMethod = async (request, reply) => {
 export const deleteEvent: RouteHandlerMethod = async (request, reply) => {
 	const { knex } = request.fastify;
 	const { id } = request.params as { id: string };
+
 	await knex("events").delete().where("id", id);
 
 	// Delete all admins for this event

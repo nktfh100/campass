@@ -1,15 +1,10 @@
-import { FastifyPluginCallback, FastifySchema } from "fastify";
+import { FastifyPluginCallback, FastifySchema } from 'fastify';
 
 import {
-	createUser,
-	deleteUser,
-	getUser,
-	getUsers,
-	importUsersExcel,
-	updateUser,
-} from "@/controllers/usersController";
-import { AdminRole } from "@/lib/types";
-import { Type } from "@sinclair/typebox";
+    createUser, deleteUser, getUser, getUsers, importUsersExcel, updateUser
+} from '@/controllers/usersController';
+import { AdminRole } from '@/lib/types';
+import { Type } from '@sinclair/typebox';
 
 export const userType = Type.Object({
 	id: Type.Number(),
@@ -58,6 +53,7 @@ const getUserSchema: FastifySchema = {
 				Type.Object({
 					event_name: Type.String(),
 					event_invitation_count: Type.Number(),
+					event_weapon_form: Type.String({ nullable: true }),
 				}),
 			]),
 		}),

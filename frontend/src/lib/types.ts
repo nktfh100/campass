@@ -10,6 +10,7 @@ export interface Event {
 	id: number;
 	name: string;
 	invitation_count: number;
+	weapon_form?: string;
 	created_at: string;
 }
 
