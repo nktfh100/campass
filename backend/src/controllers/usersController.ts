@@ -1,10 +1,10 @@
-import { RouteHandlerMethod } from 'fastify';
-import { NewUser } from 'knex/types/tables';
-import xlsx from 'node-xlsx';
+import { RouteHandlerMethod } from "fastify";
+import { NewUser } from "knex/types/tables";
+import xlsx from "node-xlsx";
 
-import { AdminRole } from '@/lib/types';
-import { Static, Type } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { AdminRole } from "@/lib/types";
+import { Static, Type } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 const userType = Type.Object({
 	id_number: Type.String(),
@@ -265,10 +265,17 @@ export const importUsersExcel: RouteHandlerMethod = async (request, reply) => {
 			return;
 		}
 
+		let idNumber = user[idNumberColumnIndex];
+		const fullName = user[fullNameColumnIndex];
+
+		if (typeof idNumber !== "string") {
+			idNumber = idNumber.toString();
+		}
+
 		users.push({
-			id_number: user[idNumberColumnIndex],
-			full_name: user[fullNameColumnIndex],
-			event_id: event_id,
+			id_number: idNumber,
+			full_name: fullName,
+			event_id,
 		});
 	});
 
