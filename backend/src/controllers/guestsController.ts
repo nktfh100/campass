@@ -326,18 +326,18 @@ export const exportGuestsExcel: RouteHandlerMethod = async (request, reply) => {
 		]);
 	});
 
-	reply.header(
-		"Content-Type",
-		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-	);
-
 	const sheetOptions = {
 		"!cols": [{ wch: 20 }, { wch: 20 }, { wch: 20 }],
 	};
 
-	const buffer = xlsx.build([
-		{ name: `אורחים - ${event.name}`, data, options: sheetOptions },
-	]);
+	const name = `אורחים - ${event.name.replace(/[\\/:?*[\]]/g, "-")}`;
+
+	const buffer = xlsx.build([{ name, data, options: sheetOptions }]);
+
+	reply.header(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	);
 
 	reply.send(buffer);
 };

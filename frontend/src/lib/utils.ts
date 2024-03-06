@@ -21,3 +21,7 @@ export function parseJwtToken(token: string): { [key: string]: string } {
 export function scrollToTop() {
 	window.scrollTo(0, 0);
 }
+
+export async function parseJsonBlob(blob: Blob) {
+	return JSON.parse(await blob.text());
+}
