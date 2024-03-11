@@ -3,7 +3,10 @@ import { FastifyInstance } from "fastify";
 import { NewEvent } from "knex/types/tables";
 
 import buildFastify from "@/app";
-import { getTestSuperAdminToken } from "@/utils/tests/getTokens";
+import {
+	getTestEventAdminToken,
+	getTestSuperAdminToken,
+} from "@/utils/tests/getTokens";
 import setupTestDB from "@/utils/tests/setupTestDB";
 
 import { defaultTestEvent } from "../../../seeds/test/testData";
@@ -11,6 +14,7 @@ import { defaultTestEvent } from "../../../seeds/test/testData";
 describe("Events routes", () => {
 	let fastify: FastifyInstance;
 	let adminToken: string;
+	let eventAdminToken: string;
 
 	beforeAll(async () => {
 		return (async () => {
@@ -19,6 +23,7 @@ describe("Events routes", () => {
 			await setupTestDB(fastify.knex);
 
 			adminToken = await getTestSuperAdminToken(fastify);
+			eventAdminToken = await getTestEventAdminToken(fastify);
 		})();
 	});
 
@@ -122,6 +127,33 @@ describe("Events routes", () => {
 		expect(response.statusCode).toBe(404);
 	});
 
+	test("GET /events/:id event admin should not be able to access other events", async () => {
+		const pass = await fastify.bcrypt.hash("test");
+
+		await fastify.knex("events").insert({
+			id: 2,
+			name: "Test Event",
+			invitation_count: 3,
+			weapon_form: "https://example.com/form",
+		});
+
+		await fastify.knex("admins").insert({
+			event_id: 2,
+			username: "test",
+			password: pass,
+		});
+
+		const response = await fastify.inject({
+			method: "GET",
+			url: `/events/2`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(403);
+	});
+
 	test("PATCH /events/:id should update an event", async () => {
 		const updateData: Partial<NewEvent> = {
 			name: chance().name(),
@@ -146,6 +178,24 @@ describe("Events routes", () => {
 		});
 	});
 
+	test("PATCH /events/:id should return 401 for event admin", async () => {
+		const updateData: Partial<NewEvent> = {
+			name: chance().name(),
+			invitation_count: chance().integer({ min: 1, max: 10 }),
+		};
+
+		const response = await fastify.inject({
+			method: "PATCH",
+			url: `/events/${defaultTestEvent.id}`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+			payload: updateData,
+		});
+
+		expect(response.statusCode).toBe(401);
+	});
+
 	test("DELETE /events/:id should delete an event with all the guests and users", async () => {
 		const response = await fastify.inject({
 			method: "DELETE",
@@ -168,5 +218,17 @@ describe("Events routes", () => {
 			.select("id")
 			.where("event_id", defaultTestEvent.id);
 		expect(guests).toHaveLength(0);
+	});
+
+	test("DELETE /events/:id should return 401 for event admin", async () => {
+		const response = await fastify.inject({
+			method: "DELETE",
+			url: `/events/${defaultTestEvent.id}`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(401);
 	});
 });

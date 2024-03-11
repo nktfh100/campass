@@ -56,10 +56,11 @@ describe("Event Admins routes", () => {
 			invitation_count: 3,
 		});
 
+		const pass = await fastify.bcrypt.hash("test");
 		await fastify.knex("admins").insert({
 			event_id: 2,
 			username: "test",
-			password: "test",
+			password: pass,
 		});
 
 		const response = await fastify.inject({

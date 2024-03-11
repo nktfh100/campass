@@ -1,8 +1,8 @@
-import { RouteHandlerMethod } from 'fastify';
+import { RouteHandlerMethod } from "fastify";
 
-import { AdminRole } from '@/lib/types';
-import { Static, Type } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { AdminRole } from "@/lib/types";
+import { Static, Type } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 const eventType = Type.Object({
 	name: Type.String(),
@@ -59,14 +59,6 @@ export const updateEvent: RouteHandlerMethod = async (request, reply) => {
 		eventType,
 		request.body
 	) as newEventBodyType;
-
-	if (
-		request.adminData?.role != AdminRole.SuperAdmin &&
-		id != request.adminData?.eventId + ""
-	) {
-		reply.status(403);
-		return;
-	}
 
 	const [event] = await knex("events")
 		.update(newEventData)
