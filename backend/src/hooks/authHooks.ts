@@ -14,7 +14,11 @@ export const verifyAdmin: (role: AdminRole) => onRequestAsyncHookHandler = (
 
 		const tokenData = request.fastify.jwt.verify<AdminTokenData>(token);
 
-		if (!tokenData.id || tokenData.role > role) {
+		if (
+			!tokenData.id ||
+			tokenData.role == undefined ||
+			tokenData.role > role
+		) {
 			throw new Error("Unauthorized!");
 		}
 

@@ -1,10 +1,18 @@
 import { Knex } from "knex";
-import { Event, Guest, User } from "knex/types/tables";
+import { Admin, Event, Guest, User } from "knex/types/tables";
 
 export const defaultTestEvent: Omit<Event, "created_at"> = {
 	id: 1,
 	name: "Test Event",
 	invitation_count: 3,
+	weapon_form: "https://example.com/form",
+};
+
+export const defaultTestEventAdmin: Omit<Admin, "created_at"> = {
+	id: 1,
+	event_id: 1,
+	username: "event_admin",
+	password: "12345",
 };
 
 export const defaultTestUser: Omit<User, "created_at"> = {
@@ -27,10 +35,12 @@ export const defaultTestGuest: Omit<Guest, "created_at" | "entered_at"> = {
 // Seed data for the test environment
 export async function seed(knex: Knex): Promise<void> {
 	await knex("events").truncate();
+	await knex("admins").truncate();
 	await knex("users").truncate();
 	await knex("guests").truncate();
 
 	await knex("events").insert(defaultTestEvent);
+	await knex("admins").insert(defaultTestEventAdmin);
 	await knex("users").insert(defaultTestUser);
 	await knex("guests").insert(defaultTestGuest);
 

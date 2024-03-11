@@ -1,6 +1,9 @@
 import { FastifyInstance } from "fastify";
 
-import { defaultTestUser } from "@/../seeds/test/testData";
+import {
+	defaultTestEventAdmin,
+	defaultTestUser,
+} from "@/../seeds/test/testData";
 import buildFastify from "@/app";
 import config from "@/lib/config";
 import setupTestDB from "@/utils/tests/setupTestDB";
@@ -20,13 +23,27 @@ describe("Auth routes", () => {
 		fastify.close();
 	});
 
-	test("POST /auth/admin with correct password should return a token", async () => {
+	test("POST /auth/admin with correct super admin password should return a token", async () => {
 		const response = await fastify.inject({
 			method: "POST",
 			url: "/auth/admin",
 			payload: {
 				username: "admin",
 				password: config.adminPassword,
+			},
+		});
+
+		expect(response.statusCode).toBe(200);
+		expect(response.json()).toMatchObject({ token: expect.any(String) });
+	});
+
+	test("POST /auth/admin with correct event admin password should return a token", async () => {
+		const response = await fastify.inject({
+			method: "POST",
+			url: "/auth/admin",
+			payload: {
+				username: defaultTestEventAdmin.username,
+				password: defaultTestEventAdmin.password,
 			},
 		});
 
