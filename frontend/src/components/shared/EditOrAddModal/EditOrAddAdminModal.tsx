@@ -191,6 +191,8 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 								value={username}
 								onValueChange={(value) => setUsername(value)}
 								isDisabled={isSubmitting}
+								autoComplete="off"
+								autoCapitalize="off"
 							/>
 
 							<Input
@@ -201,6 +203,8 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 								value={password}
 								onValueChange={(value) => setPassword(value)}
 								isDisabled={isSubmitting}
+								autoComplete="off"
+								autoCapitalize="off"
 							/>
 						</ModalBody>
 						<ModalFooter className={stylesShared["modal__footer"]}>

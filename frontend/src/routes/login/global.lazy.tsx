@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { Button } from '@nextui-org/button';
-import { Checkbox } from '@nextui-org/checkbox';
-import { Input } from '@nextui-org/input';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Input } from "@nextui-org/input";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-import styles from './global.module.scss';
-import stylesShared from './loginShared.module.scss';
+import styles from "./global.module.scss";
+import stylesShared from "./loginShared.module.scss";
 
 export const Route = createLazyFileRoute("/login/global")({
 	component: GlobalLogin,
@@ -45,6 +45,8 @@ function GlobalLogin() {
 						onValueChange={(value: string) => setUsername(value)}
 						className={styles["form__username"]}
 						isRequired
+						autoComplete="off"
+						autoCapitalize="off"
 					/>
 					{isAdmin && (
 						<Input
@@ -56,6 +58,8 @@ function GlobalLogin() {
 							}
 							className={styles["form__password"]}
 							isRequired
+							autoComplete="off"
+							autoCapitalize="off"
 						/>
 					)}
 					<Checkbox

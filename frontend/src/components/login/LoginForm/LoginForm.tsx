@@ -82,6 +82,8 @@ export default function LoginForm<T>({
 						onValueChange={(value: string) => setUsername(value)}
 						className={styles["form__username"]}
 						isRequired
+						autoComplete="username"
+						autoCapitalize="off"
 					/>
 				)}
 				<Input
@@ -97,6 +99,8 @@ export default function LoginForm<T>({
 					onValueChange={(value: string) => setPassword(value)}
 					className={styles["form__password"]}
 					isRequired
+					autoComplete="current-password"
+					autoCapitalize="off"
 				/>
 			</div>
 			{error && (

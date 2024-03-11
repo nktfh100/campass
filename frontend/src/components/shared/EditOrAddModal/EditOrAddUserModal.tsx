@@ -1,15 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
-import UsersContext from '@/contexts/UsersContext';
-import { createUser, editUser } from '@/lib/api/users';
-import { APIResponse, ModalType, User } from '@/lib/types';
-import { openGlobalModal } from '@/stores/useGlobalModalStore';
-import { Button } from '@nextui-org/button';
-import { Input } from '@nextui-org/input';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import UsersContext from "@/contexts/UsersContext";
+import { createUser, editUser } from "@/lib/api/users";
+import { APIResponse, ModalType, User } from "@/lib/types";
+import { openGlobalModal } from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+} from "@nextui-org/modal";
 
-import stylesShared from './sharedEditAddModal.module.scss';
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -163,6 +169,8 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								isInvalid={!!fullNameError}
 								errorMessage={fullNameError}
 								isDisabled={isSubmitting}
+								autoComplete="off"
+								autoCapitalize="off"
 							/>
 							<Input
 								label="תעודת זהות"
@@ -174,6 +182,8 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 								isInvalid={!!idNumberError}
 								errorMessage={idNumberError}
 								isDisabled={isSubmitting}
+								autoComplete="off"
+								autoCapitalize="off"
 							/>
 						</ModalBody>
 						<ModalFooter className={stylesShared["modal__footer"]}>

@@ -1,17 +1,26 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from "react";
 
-import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
-import GuestsContext from '@/contexts/GuestsContext';
-import { createGuest, deleteGuest, editGuest } from '@/lib/api/guests';
-import { APIResponse, Guest, ModalType } from '@/lib/types';
-import { openGlobalModal, openYesNoGlobalModal } from '@/stores/useGlobalModalStore';
-import { Button } from '@nextui-org/button';
-import { Checkbox } from '@nextui-org/checkbox';
-import { Input } from '@nextui-org/input';
-import { Link } from '@nextui-org/link';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import GuestsContext from "@/contexts/GuestsContext";
+import { createGuest, deleteGuest, editGuest } from "@/lib/api/guests";
+import { APIResponse, Guest, ModalType } from "@/lib/types";
+import {
+	openGlobalModal,
+	openYesNoGlobalModal,
+} from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Input } from "@nextui-org/input";
+import { Link } from "@nextui-org/link";
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+} from "@nextui-org/modal";
 
-import stylesShared from './sharedEditAddModal.module.scss';
+import stylesShared from "./sharedEditAddModal.module.scss";
 
 interface BaseModalProps {
 	modalType: ModalType;
@@ -222,6 +231,8 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							value={fullName}
 							onValueChange={(value) => setFullName(value)}
 							isDisabled={isSubmitting}
+							autoComplete="off"
+							autoCapitalize="off"
 						/>
 						<Input
 							label="תעודת זהות"
@@ -233,6 +244,8 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 							isInvalid={!!idNumberError}
 							errorMessage={idNumberError}
 							isDisabled={isSubmitting}
+							autoComplete="off"
+							autoCapitalize="off"
 						/>
 						<Checkbox
 							isSelected={weapon}
