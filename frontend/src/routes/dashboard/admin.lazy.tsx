@@ -215,12 +215,15 @@ function DashboardAdminIndex() {
 						onEventAdded={(event: Event) => {
 							events.push(event);
 							setActiveEvent(event);
+							setEvents([...events]);
 						}}
 						onEventEdited={(event: Event) => {
 							const index = events.findIndex(
 								(e) => e.id == event.id
 							);
 							events[index] = event;
+							setEvents([...events]);
+							setActiveEvent(event);
 						}}
 					/>
 				)}
