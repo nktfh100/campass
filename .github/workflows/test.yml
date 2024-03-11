@@ -8,6 +8,11 @@ on:
         branches:
             - main
 
+env:
+    ADMIN_PASSWORD: "admin"
+    JWT_SECRET: "secret"
+    FRONTEND_URL: http://localhost:5173
+
 jobs:
     test:
         runs-on: ubuntu-latest
