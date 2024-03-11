@@ -21,6 +21,9 @@ jobs:
               with:
                   node-version: 18.x
 
+            - name: cd into backend
+              run: cd backend
+
             - name: Install dependencies
               run: npm install
 
