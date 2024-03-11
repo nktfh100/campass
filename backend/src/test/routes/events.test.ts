@@ -196,7 +196,7 @@ describe("Events routes", () => {
 		expect(response.statusCode).toBe(401);
 	});
 
-	test("DELETE /events/:id should delete an event with all the guests and users", async () => {
+	test("DELETE /events/:id should delete an event with all the guests, users and admins", async () => {
 		const response = await fastify.inject({
 			method: "DELETE",
 			url: `/events/${defaultTestEvent.id}`,
@@ -218,6 +218,12 @@ describe("Events routes", () => {
 			.select("id")
 			.where("event_id", defaultTestEvent.id);
 		expect(guests).toHaveLength(0);
+
+		const admins = await fastify
+			.knex("admins")
+			.select("id")
+			.where("event_id", defaultTestEvent.id);
+		expect(admins).toHaveLength(0);
 	});
 
 	test("DELETE /events/:id should return 401 for event admin", async () => {

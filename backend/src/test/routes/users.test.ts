@@ -4,6 +4,7 @@ import { NewUser, User } from "knex/types/tables";
 
 import buildFastify from "@/app";
 import {
+	getTestEventAdminToken,
 	getTestSuperAdminToken,
 	getTestUserToken,
 } from "@/utils/tests/getTokens";
@@ -16,6 +17,7 @@ describe("Users routes", () => {
 	let fastify: FastifyInstance;
 	let adminToken: string;
 	let userToken: string;
+	let eventAdminToken: string;
 
 	beforeAll(async () => {
 		return (async () => {
@@ -25,6 +27,7 @@ describe("Users routes", () => {
 
 			adminToken = await getTestSuperAdminToken(fastify);
 			userToken = await getTestUserToken(fastify);
+			eventAdminToken = await getTestEventAdminToken(fastify);
 		})();
 	});
 
@@ -64,7 +67,7 @@ describe("Users routes", () => {
 	test("GET /users/me should return logged in user data", async () => {
 		const response = await fastify.inject({
 			method: "GET",
-			url: `/users/${defaultTestUser.id}`,
+			url: `/users/me`,
 			headers: {
 				Authorization: `Bearer ${userToken}`,
 			},
@@ -80,6 +83,25 @@ describe("Users routes", () => {
 			url: `/users/2`,
 			headers: {
 				Authorization: `Bearer ${userToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(403);
+	});
+
+	test("GET /users/:id by event admin should return 403 if trying to access other events", async () => {
+		await fastify.knex("users").insert({
+			id: 555,
+			event_id: 2,
+			id_number: chance().ssn(),
+			full_name: chance().name(),
+		});
+
+		const response = await fastify.inject({
+			method: "GET",
+			url: `/users/555`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
 			},
 		});
 
@@ -121,6 +143,33 @@ describe("Users routes", () => {
 		expect(jsonRes.users).toHaveLength(2);
 	});
 
+	test("GET /users as super admin without event_id should return 400", async () => {
+		const response = await fastify.inject({
+			method: "GET",
+			url: `/users`,
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(400);
+	});
+
+	test("GET /users as event admin should return only users for that event", async () => {
+		const response = await fastify.inject({
+			method: "GET",
+			url: `/users`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		const jsonRes = response.json();
+
+		expect(response.statusCode).toBe(200);
+		expect(jsonRes.users).toHaveLength(2);
+	});
+
 	test("GET /users without token should return 401", async () => {
 		const response = await fastify.inject({
 			method: "GET",
@@ -148,6 +197,43 @@ describe("Users routes", () => {
 
 		expect(response.statusCode).toBe(200);
 		expect(response.json()).toMatchObject({ user: newUserData });
+	});
+
+	test("POST /users by event admin should create a user", async () => {
+		const newUserData: NewUser = {
+			id_number: chance().ssn(),
+			full_name: chance().name(),
+		};
+
+		const response = await fastify.inject({
+			method: "POST",
+			url: `/users`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+			payload: newUserData,
+		});
+
+		expect(response.statusCode).toBe(200);
+		expect(response.json()).toMatchObject({ user: newUserData });
+	});
+
+	test("POST /users by super admin without event_id should return 400", async () => {
+		const newUserData: NewUser = {
+			id_number: chance().ssn(),
+			full_name: chance().name(),
+		};
+
+		const response = await fastify.inject({
+			method: "POST",
+			url: `/users`,
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+			payload: newUserData,
+		});
+
+		expect(response.statusCode).toBe(400);
 	});
 
 	test("POST /users without a token should return 401", async () => {
@@ -230,6 +316,53 @@ describe("Users routes", () => {
 		expect(jsonRes.user).toMatchObject(updateUserData);
 	});
 
+	test("PATCH /users/:id by event admin should update a user", async () => {
+		const updateUserData: Partial<User> = {
+			full_name: chance().name(),
+			id_number: chance().ssn(),
+		};
+
+		const response = await fastify.inject({
+			method: "PATCH",
+			url: `/users/${defaultTestUser.id}`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+			payload: updateUserData,
+		});
+
+		const jsonRes = response.json();
+
+		expect(response.statusCode).toBe(200);
+		expect(jsonRes).toMatchObject({ user: expect.any(Object) });
+		expect(jsonRes.user).toMatchObject(updateUserData);
+	});
+
+	test("PATCH /users/:id by event admin should return 403 if trying to update users in different event", async () => {
+		await fastify.knex("users").insert({
+			id: 55,
+			event_id: 2,
+			id_number: chance().ssn(),
+			full_name: chance().name(),
+		});
+
+		const updateUserData: Partial<User> = {
+			full_name: chance().name(),
+			id_number: chance().ssn(),
+		};
+
+		const response = await fastify.inject({
+			method: "PATCH",
+			url: `/users/55`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+			payload: updateUserData,
+		});
+
+		expect(response.statusCode).toBe(403);
+	});
+
 	test("PATCH /users/:id invalid user id should return 404", async () => {
 		const updateUserData: Partial<User> = {
 			full_name: chance().name(),
@@ -247,7 +380,7 @@ describe("Users routes", () => {
 		expect(response.statusCode).toBe(404);
 	});
 
-	test("DELETE /users/:id should delete a user with all his guests", async () => {
+	test("DELETE /users/:id by super admin should delete a user with all his guests", async () => {
 		const response = await fastify.inject({
 			method: "DELETE",
 			url: `/users/${defaultTestUser.id}`,
@@ -264,6 +397,44 @@ describe("Users routes", () => {
 			.where("user_id", defaultTestUser.id);
 
 		expect(guests).toHaveLength(0);
+	});
+
+	test("DELETE /users/:id by event admin should delete a user with all his guests", async () => {
+		const response = await fastify.inject({
+			method: "DELETE",
+			url: `/users/${defaultTestUser.id}`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(204);
+
+		const guests = await fastify
+			.knex("guests")
+			.select("id")
+			.where("user_id", defaultTestUser.id);
+
+		expect(guests).toHaveLength(0);
+	});
+
+	test("DELETE /users/:id by event admin should return 403 if trying to delete users in different event", async () => {
+		await fastify.knex("users").insert({
+			id: 55,
+			event_id: 2,
+			id_number: chance().ssn(),
+			full_name: chance().name(),
+		});
+
+		const response = await fastify.inject({
+			method: "DELETE",
+			url: `/users/55`,
+			headers: {
+				Authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(403);
 	});
 
 	test("DELETE /users/:id without token return 401", async () => {

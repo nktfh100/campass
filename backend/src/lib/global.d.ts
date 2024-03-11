@@ -5,6 +5,8 @@ import FastifyJwtNamespace from "@fastify/jwt";
 
 import { AdminRole, AdminTokenData, UserTokenData } from "./types";
 
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 declare module "fastify" {
 	interface FastifyInstance
 		extends FastifyJwtNamespace<{ namespace: "security" }> {
@@ -50,7 +52,7 @@ declare module "knex/types/tables" {
 		created_at: Date;
 	}
 
-	type NewUser = Omit<User, "id" | "created_at">;
+	type NewUser = PartialBy<Omit<User, "id" | "created_at">, event_id>;
 
 	interface Guest {
 		id: number;

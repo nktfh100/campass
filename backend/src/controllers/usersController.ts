@@ -108,6 +108,7 @@ export const getUsers: RouteHandlerMethod = async (request, reply) => {
 		limit: number;
 		event_id?: number;
 	};
+
 	if (request.adminData?.role == AdminRole.SuperAdmin) {
 		if (!event_id) {
 			reply.status(400);
