@@ -5,6 +5,7 @@ import { Guest, NewGuest } from "knex/types/tables";
 import { defaultTestGuest } from "@/../seeds/test/testData";
 import buildFastify from "@/app";
 import {
+	getTestEventAdminToken,
 	getTestSuperAdminToken,
 	getTestUserToken,
 } from "@/utils/tests/getTokens";
@@ -16,6 +17,7 @@ describe("Guests routes", () => {
 	let fastify: FastifyInstance;
 	let adminToken: string;
 	let userToken: string;
+	let eventAdminToken: string;
 
 	beforeAll(async () => {
 		return (async () => {
@@ -25,6 +27,7 @@ describe("Guests routes", () => {
 
 			adminToken = await getTestSuperAdminToken(fastify);
 			userToken = await getTestUserToken(fastify);
+			eventAdminToken = await getTestEventAdminToken(fastify);
 		})();
 	});
 
@@ -150,6 +153,39 @@ describe("Guests routes", () => {
 		expect(response.statusCode).toBe(200);
 		expect(jsonRes).toMatchObject({ guests: expect.any(Array) });
 		expect(jsonRes.guests.length).toBe(1);
+		expect(jsonRes.guests[0]).toMatchObject(defaultTestGuest);
+	});
+
+	test("GET /guests by admin with user_id should return only the user's guests", async () => {
+		const response = await fastify.inject({
+			method: "GET",
+			url: "/guests?user_id=1",
+			headers: {
+				authorization: `Bearer ${adminToken}`,
+			},
+		});
+
+		const jsonRes = response.json();
+
+		expect(response.statusCode).toBe(200);
+		expect(jsonRes).toMatchObject({ guests: expect.any(Array) });
+		expect(jsonRes.guests.length).toBe(1);
+	});
+
+	test("GET /guests by event admin should return only the event's guests", async () => {
+		const response = await fastify.inject({
+			method: "GET",
+			url: "/guests",
+			headers: {
+				authorization: `Bearer ${eventAdminToken}`,
+			},
+		});
+
+		const jsonRes = response.json();
+
+		expect(response.statusCode).toBe(200);
+		expect(jsonRes).toMatchObject({ guests: expect.any(Array) });
+		expect(jsonRes.guests.length).toBe(2);
 	});
 
 	test("GET /guests without token should return 401", async () => {
@@ -176,7 +212,7 @@ describe("Guests routes", () => {
 		expect(response.json()).toMatchObject({ guests: [] });
 	});
 
-	test("POST /guests by user should return a guest", async () => {
+	test("POST /guests by user should create a guest", async () => {
 		const newGuestData: NewGuest = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
@@ -198,7 +234,7 @@ describe("Guests routes", () => {
 		expect(jsonRes.guest).toMatchObject(newGuestData);
 	});
 
-	test("POST /guests by admin should return a guest", async () => {
+	test("POST /guests by admin should create a guest", async () => {
 		const newGuestData: NewGuest = {
 			full_name: chance().name(),
 			id_number: chance().ssn({ dashes: false }),
@@ -233,6 +269,30 @@ describe("Guests routes", () => {
 			url: "/guests",
 			headers: {
 				authorization: `Bearer ${adminToken}`,
+			},
+			payload: newGuestData,
+		});
+
+		expect(response.statusCode).toBe(400);
+	});
+
+	test("POST /guests with invalid event_id should return 400", async () => {
+		// This really should not happen
+		await fastify.knex("users").update({ event_id: 555 }).where("id", 1);
+
+		const newGuestData: NewGuest = {
+			user_id: 1,
+			uuid: getRandomUUID(),
+			full_name: chance().name(),
+			id_number: chance().ssn({ dashes: false }),
+			weapon: chance().bool(),
+		};
+
+		const response = await fastify.inject({
+			method: "POST",
+			url: "/guests",
+			headers: {
+				authorization: `Bearer ${userToken}`,
 			},
 			payload: newGuestData,
 		});
@@ -449,6 +509,32 @@ describe("Guests routes", () => {
 		expect(response.statusCode).toBe(403);
 	});
 
+	test("PATCH /guests/:uuid event admin should not be able to update other events guests", async () => {
+		const uuid = getRandomUUID();
+		const newGuestData: NewGuest = {
+			user_id: 1,
+			event_id: 2,
+			uuid,
+			full_name: chance().name(),
+			id_number: chance().ssn({ dashes: false }),
+			weapon: chance().bool(),
+		};
+		await fastify.knex("guests").insert(newGuestData);
+
+		const response = await fastify.inject({
+			method: "PATCH",
+			url: `/guests/${uuid}`,
+			headers: {
+				authorization: `Bearer ${eventAdminToken}`,
+			},
+			payload: {
+				full_name: chance().name(),
+			},
+		});
+
+		expect(response.statusCode).toBe(403);
+	});
+
 	test("DELETE /guests/:uuid by admin should return 204", async () => {
 		const response = await fastify.inject({
 			method: "DELETE",
@@ -511,6 +597,29 @@ describe("Guests routes", () => {
 			url: `/guests/${uuid}`,
 			headers: {
 				authorization: `Bearer ${userToken}`,
+			},
+		});
+
+		expect(response.statusCode).toBe(403);
+	});
+
+	test("DELETE /guests/:uuid event admin should not be able to delete other events guests", async () => {
+		const uuid = getRandomUUID();
+		const newGuestData: NewGuest = {
+			user_id: 1,
+			event_id: 2,
+			uuid,
+			full_name: chance().name(),
+			id_number: chance().ssn({ dashes: false }),
+			weapon: chance().bool(),
+		};
+		await fastify.knex("guests").insert(newGuestData);
+
+		const response = await fastify.inject({
+			method: "DELETE",
+			url: `/guests/${uuid}`,
+			headers: {
+				authorization: `Bearer ${eventAdminToken}`,
 			},
 		});
 

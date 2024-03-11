@@ -55,6 +55,7 @@ export const createGuest: RouteHandlerMethod = async (request, reply) => {
 		.where("id", newGuestData.event_id)
 		.first();
 
+	// This really should not happen
 	if (!event) {
 		reply.status(400);
 		return { error: "Event not found" };
