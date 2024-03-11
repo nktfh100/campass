@@ -11,7 +11,9 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
-
+        defaults:
+            run:
+                working-directory: ./backend
         steps:
             - name: Checkout code
               uses: actions/checkout@v2
@@ -20,9 +22,6 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 18.x
-
-            - name: cd into backend
-              run: cd backend
 
             - name: Install dependencies
               run: npm install
