@@ -35,6 +35,9 @@ function Ticket() {
 				<>
 					<h1>{data.event_name}</h1>
 					<h2>כרטיס מבקר - {data.full_name}</h2>
+					{data.weapon && (
+					  <h2>(חמוש)</h2>
+					)}
 					<h2>יש להציג כרטיס זה בכניסה לקמפוס!</h2>
 					<QRCode
 						size={256}
