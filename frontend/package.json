@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource/rubik": "^5.0.18",
+    "@nextui-org/accordion": "^2.0.28",
     "@nextui-org/button": "^2.0.26",
     "@nextui-org/card": "^2.0.24",
     "@nextui-org/checkbox": "^2.0.25",

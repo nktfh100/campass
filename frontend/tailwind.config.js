@@ -6,7 +6,7 @@ export default {
 		"./index.html",
 		"./src/**/*.{js,ts,jsx,tsx}",
 		// "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-		"./node_modules/@nextui-org/theme/dist/components/(button|input|dropdown|popover|select|link|tabs|modal|spinner|pagination|card|checkbox).js",
+		"./node_modules/@nextui-org/theme/dist/components/(button|input|dropdown|popover|select|link|tabs|modal|spinner|pagination|card|checkbox|accordion).js",
 	],
 	theme: {
 		extend: {},

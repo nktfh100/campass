@@ -14,6 +14,7 @@ import {
 	openGlobalModal,
 	openYesNoGlobalModal,
 } from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
 import { Spinner } from "@nextui-org/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";

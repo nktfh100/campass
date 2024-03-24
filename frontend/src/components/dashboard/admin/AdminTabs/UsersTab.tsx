@@ -1,19 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import UserCards from '@/components/dashboard/admin/UserCards/UserCards';
-import UserModal from '@/components/dashboard/admin/UserModal/UserModal';
-import EditOrAddUserModal from '@/components/shared/EditOrAddModal/EditOrAddUserModal';
-import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
-import UsersContext from '@/contexts/UsersContext';
-import { uploadUsersExcel } from '@/lib/api/excel';
-import { getUsers } from '@/lib/api/users';
-import { ApiPagination, Event, ModalType, User } from '@/lib/types';
-import { scrollToTop } from '@/lib/utils';
-import { openGlobalModal } from '@/stores/useGlobalModalStore';
-import { Button } from '@nextui-org/button';
-import { useQuery } from '@tanstack/react-query';
+import UserCards from "@/components/dashboard/admin/UserCards/UserCards";
+import UserModal from "@/components/dashboard/admin/UserModal/UserModal";
+import EditOrAddUserModal from "@/components/shared/EditOrAddModal/EditOrAddUserModal";
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import UsersContext from "@/contexts/UsersContext";
+import { uploadUsersExcel } from "@/lib/api/excel";
+import { getUsers } from "@/lib/api/users";
+import { ApiPagination, Event, ModalType, User } from "@/lib/types";
+import { scrollToTop } from "@/lib/utils";
+import { openGlobalModal } from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
+import { useQuery } from "@tanstack/react-query";
 
-import stylesShared from './AdminTabShared.module.scss';
+import stylesShared from "./AdminTabShared.module.scss";
 
 export default function UsersTab({ event }: { event: Event }) {
 	const [users, setUsers] = useState<User[]>([]);

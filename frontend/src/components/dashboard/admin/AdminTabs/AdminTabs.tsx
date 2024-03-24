@@ -1,13 +1,15 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import ActiveEventContext from '@/contexts/ActiveEventContext';
-import { Tab, Tabs } from '@nextui-org/tabs';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import ActiveEventContext from "@/contexts/ActiveEventContext";
+import { Button } from "@nextui-org/button";
+import { Tab, Tabs } from "@nextui-org/tabs";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
-import styles from './AdminTabs.module.scss';
-import EventAdminsTab from './EventAdminsTabs';
-import GuestsTab from './GuestsTab';
-import UsersTab from './UsersTab';
+import styles from "./AdminTabs.module.scss";
+import EventAdminsTab from "./EventAdminsTab";
+import GuestsTab from "./GuestsTab";
+import HelpTab from "./HelpTab";
+import UsersTab from "./UsersTab";
 
 export default function AdminTabs({
 	showAdminsTab = true,
@@ -40,6 +42,9 @@ export default function AdminTabs({
 			selectedKey={activeTab}
 			onSelectionChange={(key) => setActiveTab(key as string)}
 		>
+			<Tab key="help" title="מדריך" className={styles["tab"]}>
+				<HelpTab />
+			</Tab>
 			{showAdminsTab && (
 				<Tab key="admins" title="מפקדים" className={styles["tab"]}>
 					<EventAdminsTab event={activeEvent} />

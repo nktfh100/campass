@@ -27,6 +27,7 @@ interface MessageModalProps {
 	isBtnLoading?: boolean;
 	yesBtnText?: string;
 	noBtnText?: string;
+	children?: React.ReactNode;
 }
 
 export default function MessageModal({
@@ -39,6 +40,7 @@ export default function MessageModal({
 	isBtnLoading,
 	yesBtnText,
 	noBtnText,
+	children,
 }: MessageModalProps) {
 	const isYesNoModal =
 		modalType == MessageModalType.YesNo ||
@@ -62,11 +64,10 @@ export default function MessageModal({
 					<p>{title}</p>
 				</ModalHeader>
 
-				{bodyText && (
-					<ModalBody className={styles["modal-body"]} dir="rtl">
-						<p>{bodyText}</p>
-					</ModalBody>
-				)}
+				<ModalBody className={styles["modal-body"]} dir="rtl">
+					{bodyText && <p>{bodyText}</p>}
+					{children}
+				</ModalBody>
 
 				<ModalFooter className={styles["modal-footer"]}>
 					{isYesNoModal ? (

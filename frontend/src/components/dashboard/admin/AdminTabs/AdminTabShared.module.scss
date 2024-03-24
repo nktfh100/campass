@@ -5,6 +5,7 @@
 	flex-direction: column;
 	gap: 0.3rem;
 	width: 100%;
+	max-width: 40rem;
 }
 
 .tab__top-buttons {
@@ -12,4 +13,10 @@
 	justify-content: center;
 	align-items: center;
 	gap: 0.5rem;
+}
+
+@media screen and (max-width: 900px) {
+	.tab-content {
+		max-width: 85vw;
+	}
 }
