@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
 import ActiveEventContext from "@/contexts/ActiveEventContext";
-import { Button } from "@nextui-org/button";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 
