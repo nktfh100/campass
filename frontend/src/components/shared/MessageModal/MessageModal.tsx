@@ -55,6 +55,7 @@ export default function MessageModal({
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
 			placement="center"
+			scrollBehavior="inside"
 		>
 			<ModalContent>
 				<ModalHeader className={styles["modal-header"]}>

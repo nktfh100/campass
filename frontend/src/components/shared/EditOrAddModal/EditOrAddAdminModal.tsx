@@ -170,6 +170,7 @@ export default function EditOrAddAdminModal(props: EditOrAddAdminModalProps) {
 				isOpen={isOpen}
 				onOpenChange={handleOpenChange}
 				placement="center"
+				scrollBehavior="inside"
 			>
 				<ModalContent>
 					<ModalHeader className={stylesShared["modal__header"]}>

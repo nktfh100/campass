@@ -95,6 +95,7 @@ export default function GuestModal({
 			}}
 			title={guest?.full_name}
 			placement="center"
+			scrollBehavior="inside"
 		>
 			<ModalContent className={styles["modal"]}>
 				<ModalHeader className={styles["modal-header"]}>

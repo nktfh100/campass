@@ -1,19 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import EditOrAddGuestModal from '@/components/shared/EditOrAddModal/EditOrAddGuestModal';
-import GuestCards from '@/components/shared/GuestCards/GuestCards';
-import { MessageModalType } from '@/components/shared/MessageModal/MessageModal';
-import GuestsContext from '@/contexts/GuestsContext';
-import UsersContext from '@/contexts/UsersContext';
-import { getGuestsByUserId } from '@/lib/api/guests';
-import { deleteUser } from '@/lib/api/users';
-import { APIResponse, Guest, ModalType, User } from '@/lib/types';
-import { openGlobalModal, openYesNoGlobalModal } from '@/stores/useGlobalModalStore';
-import { Button } from '@nextui-org/button';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/modal';
-import { useQuery } from '@tanstack/react-query';
+import EditOrAddGuestModal from "@/components/shared/EditOrAddModal/EditOrAddGuestModal";
+import GuestCards from "@/components/shared/GuestCards/GuestCards";
+import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import GuestsContext from "@/contexts/GuestsContext";
+import UsersContext from "@/contexts/UsersContext";
+import { getGuestsByUserId } from "@/lib/api/guests";
+import { deleteUser } from "@/lib/api/users";
+import { APIResponse, Guest, ModalType, User } from "@/lib/types";
+import {
+	openGlobalModal,
+	openYesNoGlobalModal,
+} from "@/stores/useGlobalModalStore";
+import { Button } from "@nextui-org/button";
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+} from "@nextui-org/modal";
+import { useQuery } from "@tanstack/react-query";
 
-import styles from './UserModal.module.scss';
+import styles from "./UserModal.module.scss";
 
 export default function UserModal({
 	user,
@@ -116,6 +125,7 @@ export default function UserModal({
 				}}
 				title={user?.full_name}
 				placement="center"
+				scrollBehavior="inside"
 			>
 				<ModalContent className={styles["modal"]}>
 					<ModalHeader className={styles["modal-header"]}>

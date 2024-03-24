@@ -146,6 +146,7 @@ export default function EditOrAddUserModal(props: EditOrAddUserModalProps) {
 				isOpen={isOpen}
 				onOpenChange={handleOpenChange}
 				placement="center"
+				scrollBehavior="inside"
 			>
 				<ModalContent>
 					<ModalHeader className={stylesShared["modal__header"]}>

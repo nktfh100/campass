@@ -207,6 +207,7 @@ export default function EditOrAddGuestModal(props: EditOrAddGuestModalProps) {
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
 			placement="center"
+			scrollBehavior="inside"
 		>
 			<ModalContent>
 				<ModalHeader

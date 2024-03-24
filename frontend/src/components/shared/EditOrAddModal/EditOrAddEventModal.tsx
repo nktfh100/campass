@@ -136,6 +136,7 @@ export default function EditOrAddEventModal(props: EditOrAddEventModalProps) {
 				modalType == ModalType.NEW ? "יצירת אירוע חדש" : "עריכת אירוע"
 			}
 			placement="center"
+			scrollBehavior="inside"
 		>
 			<ModalContent>
 				<form onSubmit={handleFormSubmit}>
