@@ -6,6 +6,7 @@ import NoEvents from "@/components/dashboard/admin/NoEvents/NoEvents";
 import SelectEvent from "@/components/dashboard/admin/SelectEvent/SelectEvent";
 import EditOrAddEventModal from "@/components/shared/EditOrAddModal/EditOrAddEventModal";
 import { MessageModalType } from "@/components/shared/MessageModal/MessageModal";
+import ActiveAdminContext from "@/contexts/ActiveAdminContext";
 import ActiveEventContext from "@/contexts/ActiveEventContext";
 import useEnsureTokenValid from "@/hooks/useEnsureTokenValid";
 import { deleteEvent, getEvent, getEvents } from "@/lib/api/events";
@@ -178,56 +179,58 @@ function DashboardAdminIndex() {
 
 	return (
 		<ActiveEventContext.Provider value={{ activeEvent, setActiveEvent }}>
-			<div className={styles["admin"]}>
-				{role == 0 && (
-					<NoEvents
-						shouldRender={events.length == 0 ? true : false}
-						handleNewEventBtn={() => {
-							openEventModal(ModalType.NEW);
-						}}
-					/>
-				)}
+			<ActiveAdminContext.Provider value={{ role, eventId }}>
+				<div className={styles["admin"]}>
+					{role == 0 && (
+						<NoEvents
+							shouldRender={events.length == 0 ? true : false}
+							handleNewEventBtn={() => {
+								openEventModal(ModalType.NEW);
+							}}
+						/>
+					)}
 
-				{role == 0 && events.length > 0 ? (
-					<div className={styles["select-event"]}>
-						<SelectEvent events={events} />
+					{role == 0 && events.length > 0 ? (
+						<div className={styles["select-event"]}>
+							<SelectEvent events={events} />
 
-						<EventActionsBtn onSelect={handleEventActionBtn} />
-					</div>
-				) : null}
+							<EventActionsBtn onSelect={handleEventActionBtn} />
+						</div>
+					) : null}
 
-				{role != 0 && (
-					<div className={styles["event-name"]}>
-						<h1>{activeEvent?.name}</h1>
-					</div>
-				)}
+					{role != 0 && (
+						<div className={styles["event-name"]}>
+							<h1>{activeEvent?.name}</h1>
+						</div>
+					)}
 
-				<AdminTabs showAdminsTab={role == 0} />
+					<AdminTabs showAdminsTab={role == 0} />
 
-				{role == 0 && (
-					<EditOrAddEventModal
-						isOpen={isEventModalOpen}
-						onClose={() => {
-							setIsEventModalOpen(false);
-						}}
-						modalType={eventModalType}
-						event={activeEvent}
-						onEventAdded={(event: Event) => {
-							events.push(event);
-							setActiveEvent(event);
-							setEvents([...events]);
-						}}
-						onEventEdited={(event: Event) => {
-							const index = events.findIndex(
-								(e) => e.id == event.id
-							);
-							events[index] = event;
-							setEvents([...events]);
-							setActiveEvent(event);
-						}}
-					/>
-				)}
-			</div>
+					{role == 0 && (
+						<EditOrAddEventModal
+							isOpen={isEventModalOpen}
+							onClose={() => {
+								setIsEventModalOpen(false);
+							}}
+							modalType={eventModalType}
+							event={activeEvent}
+							onEventAdded={(event: Event) => {
+								events.push(event);
+								setActiveEvent(event);
+								setEvents([...events]);
+							}}
+							onEventEdited={(event: Event) => {
+								const index = events.findIndex(
+									(e) => e.id == event.id
+								);
+								events[index] = event;
+								setEvents([...events]);
+								setActiveEvent(event);
+							}}
+						/>
+					)}
+				</div>
+			</ActiveAdminContext.Provider>
 		</ActiveEventContext.Provider>
 	);
 }

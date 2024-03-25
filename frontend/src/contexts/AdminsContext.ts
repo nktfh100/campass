@@ -7,9 +7,9 @@ type AdminsContextType = {
 	setAdmins: (users: Admin[] | ((prevUsers: Admin[]) => Admin[])) => void;
 };
 
-const UsersContext = createContext<AdminsContextType>({
+const AdminsContext = createContext<AdminsContextType>({
 	admins: [],
 	setAdmins: () => {},
 });
 
-export default UsersContext;
+export default AdminsContext;
