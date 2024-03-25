@@ -93,7 +93,11 @@ Create a ``nginx/.htpasswd`` file to protect the service.
 
 ## Running the app
 
-Run ``docker-compose up`` in the root directory.
+Start the services using docker compose:
+
+```bash
+docker compose up -d
+```
 
 ### Shynet
 
